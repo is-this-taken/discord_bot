@@ -451,6 +451,7 @@ def coinFlip(message, ID):
     except (IndexError, ValueError):
         return "Please enter a valid bet amount like \",coinflip 50\"."
     
+    
     if (bet < 1):
         return "Nope"
     if (bet > array[place].cash):
