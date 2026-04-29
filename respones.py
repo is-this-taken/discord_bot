@@ -7,7 +7,7 @@ from playsound import playsound
 
 #The class per person
 class Person:
-    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer):
+    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,withdraws,VC2,VCAlone,VCGroup,profit):
          self.id = int(id)
          self.mode = int(mode)
          self.count = int(count)
@@ -18,9 +18,27 @@ class Person:
          self.slot2 = int(slot2)
          self.slot3 = int(slot3)
          self.beer = int(beer)
+         self.sus = int(sus)
+         self.achivements = str(achivements)
+         self.wordle = int(wordle)
+         self.bank0 = int(bank0)
+         self.bank1 = int(bank1)
+         self.bank2 = int(bank2)
+         self.bank3 = int(bank3)
+         self.bank4 = int(bank4)
+         self.bank5 = int(bank5)
+         self.bank6 = int(bank6)
+         self.bank7 = int(bank7)
+         self.bank8 = int(bank8)
+         self.bank9 = int(bank9)
+         self.withdraws = int(withdraws)
+         self.VC2 = int(VC2)
+         self.VCAlone = int(VCAlone)
+         self.VCGroup = int(VCGroup)
+         self.profit = int(profit)
     def tostr (self):
         #only used to write to file
-        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer}"
+        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.withdraws},{self.VC2},{self.VCAlone},{self.VCGroup}"
     
 #The class per shop item
 class Shop:
@@ -30,6 +48,57 @@ class Shop:
         self.stock = int(stock)
     def tostr (self):
         return f"{self.price},{self.item},{self.stock}"
+
+"""Show bak money"""
+def bank(ID):
+    array = getArray()
+    place = getPlace(ID,array)
+    return f"You have ${array[place].bank} in the bank"
+
+def deposit(ID,amount):
+    array = getArray()
+    place = getPlace(ID,array)
+    if(int(amount) < 0):
+        return "bitch"
+    if(array[place].cash < int(amount)):
+        return "Not enough money to deposit"
+    array[place].cash -= int(amount)
+    array[place].bank += int(amount)
+    saveArray(array)
+    return "deposit sucsessful!"
+
+def withdraw(ID,amount):
+    array = getArray()
+    place = getPlace(ID,array)
+    if(int(amount) < 0):
+        return "bitch"
+    if(array[place].bank < int(amount)):
+        return "Not enough money to withdrawal"
+    if(array[place].withdraws == 0):
+        return "No withdraws avaliable"
+    array[place].cash += int(amount)
+    array[place].bank -= int(amount)
+    array[place].withdraws -= 1
+    saveArray(array)
+    return "withdrawal sucsessful!"
+
+"""Shows the leaderboard of money"""
+def leaderboard_bank():
+    array = getArray()
+    text = ""
+    length = len(array) 
+    for i in range(length):
+        top = -1
+        by = ""
+        spot = -1
+        for j in range(len(array)):
+            if int(array[j].bank) > top:
+                top = int(array[j].bank)
+                by = array[j].name
+                spot=j
+        text += f"{str(i+1)}. ${str(top)} by {by}\n"
+        array.pop(spot)
+    return text
 
 """beer leaderboard"""
 def leaderboard_beer():
@@ -228,46 +297,26 @@ def slots(ID):
 
 
         if(banna == 3):
-            slots += "bananas! +$5"
-            array[place].cash += 5
+            slots += "bananas! +$50"
+            array[place].cash += 50
         elif(straw == 3):
-            slots += "Strawberries +$5"
-            array[place].cash += 5
+            slots += "Strawberries +$50"
+            array[place].cash += 50
         elif(pineapple == 3):
-            slots += "Pineapples +$5"
-            array[place].cash += 5
+            slots += "Pineapples +$50"
+            array[place].cash += 50
         elif(cherry == 3):
-            slots += "Cherries +$10"
-            array[place].cash += 10
-        elif(beer == 3):
-            slots += "I got a beer in my beer +$100"
+            slots += "Cherries +$100"
             array[place].cash += 100
+        elif(beer == 3):
+            slots += "I got a beer in my beer +$500"
+            array[place].cash += 500
         elif(seven == 3):
             slots += "Horse"
             array[place].cash += 777
-        elif(seven == 2):
-            slots += "77 +$77"
-            array[place].cash += 77
-        elif(seven == 1):
-            slots += "horseSeven.mp3"
-            array[place].cash += 7
-        elif(beer == 2):
-            slots += "Beers! +$20"
-            array[place].cash += 20
-        elif(cherry == 2 or pineapple == 2 or straw == 2 or banna == 2):
-            slots += "Pair! +$3"
-            array[place].cash += 3
         elif(q == 3):
             slots += "???"
             array[place].cash += 150
-
-
-        elif(array[place].slot1 >= 1 and array[place].slot1 <= 90 and array[place].slot2 >= 1 and array[place].slot2 <= 90 and array[place].slot3 >= 1 and array[place].slot3 <= 90):
-            slots += "Three Unique Fruit +$2"
-            array[place].cash += 2
-
-
-
 
         saveArray(array)
         return slots
@@ -315,6 +364,10 @@ def fuckComputer(num):
         return True
     elif num == 9:
         playsound("Z:\Assets\Voice Lines\\flint-and-steel.mp3")
+        return True
+    elif num == 10:
+        return True
+    elif num == 11:
         return True
     else:
         return False
@@ -451,12 +504,21 @@ def coinFlip(message, ID):
     except (IndexError, ValueError):
         return "Please enter a valid bet amount like \",coinflip 50\"."
     
-    
+    rig = False
+    fin = open("achivement","r")
+    rigg = fin.readline().strip()
+    if (rigg.find("1") != -1):
+        rig = True
+
+    fout = open ("achivement","w")
+    fout.write("0")
+    fout.close()
+
     if (bet < 1):
         return "Nope"
     if (bet > array[place].cash):
         return f"Sorry, your bet is too high, your total amount of money is {array[place].cash}"
-    elif(win == 1):
+    elif(win == 1 and rig==False):
         array[place].cash -= bet
         saveArray(array)
         return f"You lost the coinflip and ${bet}"
@@ -641,7 +703,7 @@ def getArray():
         text = fin.readline().strip()
         if text == "":
             break
-        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9]))
+        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9],text.split(",") [10],text.split(",") [11],text.split(",") [12],text.split(",") [13],text.split(",") [14]))
         count +=1
     fin.close()
     return array
@@ -678,7 +740,7 @@ def register(message,ID):
     place = getPlace(ID,array)
     if(place!=-1):
         return "you are already registered nerd"
-    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0"))
+    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"))
     saveArray(array)
     return "Resitered Sucsessfully"
 
@@ -705,41 +767,95 @@ def wordle(message):
     array = getArray()
     lines = message.split("\n")
     for i in range(len(lines)-1):
-        if(lines[i+1] [0]== "👑"):
-            moneyGain = 100
+        if(lines[i+1] [0]== "👑" or lines[i+1].startswith(":crown:")):
+            moneyGain = 2.5
+            susadd = 5
         if(lines[i+1] [0]== "2"):
-            moneyGain = 50
+            moneyGain = 2.0
+            susadd = 2
         if(lines[i+1] [0]== "3"):
-            moneyGain = 25
+            moneyGain = 1.0
+            susadd = 0
         if(lines[i+1] [0]== "4"):
-            moneyGain = 10
+            moneyGain = .5
+            susadd = -1
         if(lines[i+1] [0]== "5"):
-            moneyGain = 5
+            moneyGain = .25
+            susadd = -3 
         if(lines[i+1] [0]== "6"):
             moneyGain = 0
+            susadd = -5
         if(lines[i+1] [0]== "X"):
-            moneyGain = -10
+            moneyGain = -5.0
+            susadd = -10
+
         for j in range(lines[i+1].count("@")):
-            ID = int(lines[i+1].split("@")[j+1].split(">")[0])
-            place = getPlace(ID, array)
-            if(place != -1):
-                array[place].cash += moneyGain
+            if(lines[i+1].split("@")[j+1].count(">") == 1):
+                ID = int(lines[i+1].split("@")[j+1].split(">")[0])
+                place = getPlace(ID, array)
+                if(place != -1):
+                    array[place].cash += int(moneyGain*float(array[place].bank))
+                    array[place].sus += susadd
+                    array[place].wordle += 1
+                    if(moneyGain == 2.5):
+                        array[place].withdraws += 1
 
 
     saveArray(array)
     return "Money Gained!!"
 
+def list_achivements():
+    message = "Current achivements:\n"
+    fin = open("achivements.txt","r")
+    while True:
+        text = fin.readline()
+        if(text == ""): break
+        message += (text.split(",")[0]+" - "+text.split(",")[1]+"\n")
+    return message
+
+def achivements(message,ID):
+    if(message==",achievements list" or message==",achievement list" ):
+        return list_achivements()
+    if(message.startswith(",achievements <@") or message.startswith(",achievement <@")):
+        return achivements(message.split(" ")[0],int(message.split("@")[1].split(">")[0]))
+
+    array = getArray()
+    place = getPlace(ID,array)
+    if (place == -1):
+        return "not registared"
+    
+    #Give achievements
+    if(array[place].achivements.find("Rich 1") == -1 and array[place].cash >=1000):
+        array[place].achivements += "Rich 1-"
+    if(array[place].achivements.find("Rich 2") == -1 and array[place].cash >=10000):
+        array[place].achivements += "Rich 2-"
+    if(array[place].achivements.find("Rich 3") == -1 and array[place].cash >=100000):
+        array[place].achivements += "Rich 3-"
+    if(array[place].achivements.find("Drunk") == -1 and array[place].beer >=100):
+        array[place].achivements += "Drunk-"
+
+
+    #Check for no achievements
+    if(array[place].achivements.count("-") == 0):
+        return "you have no achivements"
+    else:
+        string = "Here are your achivements:\n"
+        for i in range(array[place].achivements.count("-")):
+            string += array[place].achivements.split("-")[i]
+            string += "\n"
+
+        return string
+
 #Response based on message sent
 def get_response(user_input: str,username, nameID, channel) -> str:
     bot_list = ["john-bot","bot-commands","bot-commands-2"]
-    print
     lowered: str = user_input.lower()
     array = getArray()
     place = getPlace(nameID,array)
     x = randint(1,100)
     print(x)
     #nameID == 1211781489931452447 and 
-    if(lowered.startswith("**your group is on a ")):
+    if(lowered.startswith("**your group is on a ") and (nameID==475196692807811074 or nameID==1211781489931452447)):
         return wordle(user_input)
     #For mode checker
     if(place != -1):
@@ -772,49 +888,59 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     elif lowered.find("help") != -1:
         num = lowered.count("serious")
         if(num==0):
-            return "In a bit"
+            text = "In a bit"
         else:
-            return "give me "+str(5*num)+" minutes"
+            text = "give me "+str(5*num)+" minutes"
 
     #dice
     elif ',roll' == lowered [0:5]:
         dice = lowered [6:]
         total = 0
         if(dice.find("d") != -1):
+            if(int(dice.split("d") [0]) >1000 or int(dice.split("d") [1] )> 1000):
+                return "Money deleted"
             for i in range(int(dice.split("d") [0])):
                 total += randint(1,int(dice.split("d") [1]))
             text = "You rolled a "+str(total)
-            print(text)
-            return text
         else:
-            return "that is not a valid dice roll"
+            text = "that is not a valid dice roll"
     elif lowered == "ping":
-        return "<@"+str(nameID)+">"
+        text = "<@"+str(nameID)+">"
     
     #commands
+    #elif lowered.startswith(",withdraw"):
+        #return withdraw(nameID,lowered.split(" ") [1])
+    #elif lowered.startswith(",deposit"):
+        #return deposit(nameID,lowered.split(" ") [1])
+    elif lowered == ",bank":
+        text = bank(nameID)
+    elif lowered == ",rig":
+        text = "coinflip rigged"
     elif lowered.startswith(",givemoney") and channel in bot_list:
-        return giveMoney(nameID,lowered.split(" ") [1],int(lowered.split(" ") [2]))
+        text = giveMoney(nameID,lowered.split(" ") [1],int(lowered.split(" ") [2]))
     elif lowered.startswith(",pay") and channel in bot_list:
-        return pay(nameID,lowered.split(" ") [1],int(lowered.split(" ") [2]))
+        text = pay(nameID,lowered.split(" ") [1],int(lowered.split(" ") [2]))
     elif lowered.startswith(",charge") and channel in bot_list:
-        return charge(nameID,lowered.split(" ") [1],int(lowered.split(" ") [2]))
+        text = charge(nameID,lowered.split(" ") [1],int(lowered.split(" ") [2]))
     elif lowered.startswith(",coinflip ") and channel in bot_list:
-        return coinFlip(lowered,nameID)
+        text = coinFlip(lowered,nameID)
     elif lowered.startswith(",quote") and channel in bot_list:
-        return quoteGame(nameID,lowered)
+        text = quoteGame(nameID,lowered)
     elif lowered == ",count":
-        return "Your counter is now at "+str(count(nameID))
+        text = "Your counter is now at "+str(count(nameID))
     elif lowered.startswith(",leaderboard"):
         if lowered == ",leaderboard count":
-            return leaderboards()
+            text = leaderboards()
         elif lowered == ",leaderboard money":
-            return leaderboard_money()
+            text = leaderboard_money()
         elif lowered == ",leaderboard beer":
-            return leaderboard_beer()
+            text = leaderboard_beer()
+        elif lowered == ",leaderboard bank":
+            text = leaderboard_bank()
         else:
-            return "leaderboards: count, money, beer"
+            text = "leaderboards: count, money, beer, bank"
     elif ((lowered.find("what") != -1) & (len(lowered)>10) & (lowered.count(" ") > 4)) or(randint(1,1000) == 120):
-        return choice(["Ah shit, here we go again ...",
+        text = choice(["Ah shit, here we go again ...",
                       "Let's go, open up, it's time for parkore",
                       "What will the next act entail?",
                       "It's becuase this amuses me",
@@ -873,41 +999,59 @@ def get_response(user_input: str,username, nameID, channel) -> str:
                       "I am evil Peter",
                       "merry christmas",
                       "||Haste||",
-                      "When Village Done?"
+                      "When Village Done?",
+                      "No changes were made"
                       ])
     elif lowered == ",cash in":
         if(array[place].count >= 1000):
-            return f"You have cashed in and gained ${cashIn(nameID)}"
-        else: return "Sorry buddy, but you need at least 1000 points to cash in. Bulk only"
+            text = f"You have cashed in and gained ${cashIn(nameID)}"
+        else: text = "Sorry buddy, but you need at least 1000 points to cash in. Bulk only"
     elif lowered.startswith(",changename") and channel in bot_list:
         if(lowered.find(",") > 1):
-            return "Invalid name, no commas allowed"
+            text = "Invalid name, no commas allowed"
         else:
-            return changename(nameID,user_input)
+            text = changename(nameID,user_input)
     elif lowered.startswith(",shop") and channel in bot_list:
-        return showShop()
+        text = showShop()
     elif lowered.startswith(",buy") and channel in bot_list:
-        return buyShit(lowered,nameID)
+        text = buyShit(lowered,nameID)
     elif lowered == ",money" and channel in bot_list:
-        return getMoney(nameID)
+        text = getMoney(nameID)
     elif lowered == ",slots" and channel in bot_list:
-        return slots(nameID)
+        text = slots(nameID)
     elif lowered.startswith(",music add "):
-        return musicAdd(user_input)
+        text = musicAdd(user_input)
     elif lowered.startswith(",register "):
-        return register(user_input,nameID)
+        text = register(user_input,nameID)
+    elif lowered.startswith(",achievements") or lowered.startswith(",achievement") or lowered=="sigma tokens for the coolest of people":
+        text = achivements(lowered,nameID)
     #give them random money for chatting trol
     elif x == 1:
         addMoney(nameID,1)
-        return "You found a dollar on the ground!"
+        text = "You found a dollar on the ground!"
     
 
 
     #Invalid ccommand
     elif lowered.startswith(","):
-        return choice([
+        text = choice([
             "not valid",
             "Trolled Idiot",
             "gay",
             ":banana:"
         ])
+    #Give achievements
+    if(array[place].achivements.find("Rich 1") == -1 and array[place].cash >=1000):
+        array[place].achivements += "Rich 1-"
+        text += "\n\nAchivement Get: Rich 1"
+    if(array[place].achivements.find("Rich 2") == -1 and array[place].cash >=10000):
+        array[place].achivements += "Rich 2-"
+        text += "\n\nAchivement Get: Rich 2"
+    if(array[place].achivements.find("Rich 3") == -1 and array[place].cash >=100000):
+        array[place].achivements += "Rich 3-"
+        text += "\n\nAchivement Get: Rich 3"
+    if(array[place].achivements.find("Drunk") == -1 and array[place].beer >=100):
+        array[place].achivements += "Drunk-"
+        text += "\n\nAchivement Get: Drunk"
+
+    return text

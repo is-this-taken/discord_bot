@@ -1,0 +1,20 @@
+Creator,Create Kfrat
+Summer Hardcore 1,Survive the first Summer Hardcore
+Summer Hardcore 2,Survive the second Summer Hardcore
+Summer Hardcore 3,Survive the third Summer Hardcore
+Energy Server Champoin,Win the Energy Server
+Super Server,Make something for the Super Server
+Rich 1, Optain K$1000
+Rich 2, Optain K$10000
+Rich 3, Optain K$100000
+Drunk, Drink 100 Beers
+Beef Dip Tier 1, Be a tier 1 beef dipper
+Beef Dip Tier 2, Be a tier 2 beef dipper
+Beef Dip Tier 3, Be a tier 3 beef dipper
+Beef Dip Tier 4, Be a tier 4 beef dipper
+Beef Dip Tier 5, Be a tier 5 beef dipper
+Multi-level Marketing, Make 1000 in interest in one day
+Ultra-lucky man, Get super lucky
+Talker, Spend 5 hours stright in a VC
+Forever alone, Spend 24 hours in a VC alone
+Mr. Popular, Spend an hour in a VC with 8+ people
