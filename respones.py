@@ -38,7 +38,7 @@ class Person:
          self.profit = int(profit)
     def tostr (self):
         #only used to write to file
-        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.withdraws},{self.VC2},{self.VCAlone},{self.VCGroup}"
+        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.withdraws},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup}"
     
 #The class per shop item
 class Shop:
@@ -53,7 +53,7 @@ class Shop:
 def bank(ID):
     array = getArray()
     place = getPlace(ID,array)
-    return f"You have ${array[place].bank} in the bank"
+    return f"You have ${array[place].bank0} in the bank"
 
 def deposit(ID,amount):
     array = getArray()
@@ -63,7 +63,7 @@ def deposit(ID,amount):
     if(array[place].cash < int(amount)):
         return "Not enough money to deposit"
     array[place].cash -= int(amount)
-    array[place].bank += int(amount)
+    array[place].bank0 += int(amount)
     saveArray(array)
     return "deposit sucsessful!"
 
@@ -77,7 +77,7 @@ def withdraw(ID,amount):
     if(array[place].withdraws == 0):
         return "No withdraws avaliable"
     array[place].cash += int(amount)
-    array[place].bank -= int(amount)
+    array[place].bank0 -= int(amount)
     array[place].withdraws -= 1
     saveArray(array)
     return "withdrawal sucsessful!"
@@ -92,8 +92,8 @@ def leaderboard_bank():
         by = ""
         spot = -1
         for j in range(len(array)):
-            if int(array[j].bank) > top:
-                top = int(array[j].bank)
+            if int(array[j].bank0) > top:
+                top = int(array[j].bank0)
                 by = array[j].name
                 spot=j
         text += f"{str(i+1)}. ${str(top)} by {by}\n"
@@ -703,7 +703,7 @@ def getArray():
         text = fin.readline().strip()
         if text == "":
             break
-        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9],text.split(",") [10],text.split(",") [11],text.split(",") [12],text.split(",") [13],text.split(",") [14]))
+        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9],text.split(",") [10],text.split(",") [11],text.split(",") [12],text.split(",") [13],text.split(",") [14],text.split(",") [15],text.split(",") [16],text.split(",") [17],text.split(",") [18],text.split(",") [19],text.split(",") [20],text.split(",") [21],text.split(",") [22],text.split(",") [23],text.split(",") [24],text.split(",") [25],text.split(",") [26],text.split(",") [27]))
         count +=1
     fin.close()
     return array
@@ -794,7 +794,7 @@ def wordle(message):
                 ID = int(lines[i+1].split("@")[j+1].split(">")[0])
                 place = getPlace(ID, array)
                 if(place != -1):
-                    array[place].cash += int(moneyGain*float(array[place].bank))
+                    array[place].cash += int(moneyGain*float(array[place].bank0))
                     array[place].sus += susadd
                     array[place].wordle += 1
                     if(moneyGain == 2.5):
@@ -848,16 +848,22 @@ def achivements(message,ID):
 
 #Response based on message sent
 def get_response(user_input: str,username, nameID, channel) -> str:
+    print(user_input,username,nameID,channel)
+    text = ""
     bot_list = ["john-bot","bot-commands","bot-commands-2"]
     lowered: str = user_input.lower()
-    array = getArray()
-    place = getPlace(nameID,array)
+    
     x = randint(1,100)
     print(x)
     #nameID == 1211781489931452447 and 
     if(lowered.startswith("**your group is on a ") and (nameID==475196692807811074 or nameID==1211781489931452447)):
-        return wordle(user_input)
+        if(channel == 1374491816707231914):
+            return wordle(user_input)
+        else:
+            return "Fuck you Horsey"
     #For mode checker
+    array = getArray()
+    place = getPlace(nameID,array)
     if(place != -1):
 
         #quote game
@@ -866,9 +872,9 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         
 
     if lowered == '':
-        return "well, you're awfully silent..."
+        text = "well, you're awfully silent..."
     elif 'hello' in lowered:
-        return 'Hi there!'
+        text = 'Hi there!'
     
     #whole quotation system
     elif (str(channel) == "quotes"):
@@ -908,10 +914,10 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = "<@"+str(nameID)+">"
     
     #commands
-    #elif lowered.startswith(",withdraw"):
-        #return withdraw(nameID,lowered.split(" ") [1])
-    #elif lowered.startswith(",deposit"):
-        #return deposit(nameID,lowered.split(" ") [1])
+    elif lowered.startswith(",withdraw"):
+        text = withdraw(nameID,lowered.split(" ") [1])
+    elif lowered.startswith(",deposit"):
+        text = deposit(nameID,lowered.split(" ") [1])
     elif lowered == ",bank":
         text = bank(nameID)
     elif lowered == ",rig":
@@ -1040,6 +1046,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
             "gay",
             ":banana:"
         ])
+    array = getArray()
     #Give achievements
     if(array[place].achivements.find("Rich 1") == -1 and array[place].cash >=1000):
         array[place].achivements += "Rich 1-"
@@ -1053,5 +1060,5 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     if(array[place].achivements.find("Drunk") == -1 and array[place].beer >=100):
         array[place].achivements += "Drunk-"
         text += "\n\nAchivement Get: Drunk"
-
+    saveArray(array)
     return text
