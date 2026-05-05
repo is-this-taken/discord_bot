@@ -744,25 +744,6 @@ def register(message,ID):
     saveArray(array)
     return "Resitered Sucsessfully"
 
-"""Enter user Id, get's their points, return -1 if they are not there"""
-"""def getPoints(ID):
-    fin = open("count.txt","r")
-    points = -1
-
-    while True:
-        check = fin.readline().strip()
-
-        if(check == ""):
-            break
-
-        elif(int(check.split(",")) [0] == int(ID)):
-            points = int(check.split(",") [1])
-            break
-
-    fin.close()
-    return points
-"""
-
 def wordle(message):
     array = getArray()
     lines = message.split("\n")
@@ -823,23 +804,12 @@ def achivements(message,ID):
     place = getPlace(ID,array)
     if (place == -1):
         return "not registared"
-    
-    #Give achievements
-    if(array[place].achivements.find("Rich 1") == -1 and array[place].cash >=1000):
-        array[place].achivements += "Rich 1-"
-    if(array[place].achivements.find("Rich 2") == -1 and array[place].cash >=10000):
-        array[place].achivements += "Rich 2-"
-    if(array[place].achivements.find("Rich 3") == -1 and array[place].cash >=100000):
-        array[place].achivements += "Rich 3-"
-    if(array[place].achivements.find("Drunk") == -1 and array[place].beer >=100):
-        array[place].achivements += "Drunk-"
-
 
     #Check for no achievements
     if(array[place].achivements.count("-") == 0):
         return "you have no achivements"
     else:
-        string = "Here are your achivements:\n"
+        string = f"You have {array[place].achivements.count("-")} achivements, they are:\n"
         for i in range(array[place].achivements.count("-")):
             string += array[place].achivements.split("-")[i]
             string += "\n"
@@ -1048,6 +1018,9 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         ])
     array = getArray()
     #Give achievements
+    if(array[place].achivements.find("Ultra Lucky Man 1") == -1 and randint(1,1000000) == 550):
+        array[place].achivements += "Ultra Lucky Man 1-"
+        text += "\n\nAchivement Get: Ultra Lucky Man 1"
     if(array[place].achivements.find("Rich 1") == -1 and array[place].cash >=1000):
         array[place].achivements += "Rich 1-"
         text += "\n\nAchivement Get: Rich 1"
