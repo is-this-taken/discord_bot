@@ -809,7 +809,7 @@ def achivements(message,ID):
     if(array[place].achivements.count("-") == 0):
         return "you have no achivements"
     else:
-        string = "You have "+{array[place].achivements.count("-")}+" achivements, they are:\n"
+        string = "You have "+str({array[place].achivements.count("-")})+" achivements, they are:\n"
         for i in range(array[place].achivements.count("-")):
             string += array[place].achivements.split("-")[i]
             string += "\n"
