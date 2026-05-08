@@ -112,10 +112,8 @@ def withdraw(ID,amount):
     place = getPlace(ID,array)
     if(int(amount) < 0):
         return "bitch"
-    if(array[place].bank < int(amount)):
+    if(array[place].bank0 < int(amount)):
         return "Not enough money to withdrawal"
-    if(array[place].withdraws == 0):
-        return "No withdraws avaliable"
     array[place].cash += int(amount)
     array[place].bank0 -= int(amount)
     array[place].withdraws -= 1
