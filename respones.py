@@ -50,10 +50,50 @@ class Shop:
         return f"{self.price},{self.item},{self.stock}"
 
 """Show bak money"""
-def bank(ID):
+def bank(ID,lowered):
+
     array = getArray()
-    place = getPlace(ID,array)
-    return f"You have ${array[place].bank0} in the bank"
+    place = getPlace(array)
+    #subcommands:
+    #List: List all banks  and their ID
+    #info X:get info about bank X
+    #Deposit/widthdraw X Y: Deposits or widthraws from bank X with amount Y
+    #amount: List all your amounts in each bank
+    #help: tell user of all commands
+
+    if(lowered.count(" ") == 0):
+        return "try [,bank help] for more information"
+    command = lowered.split(" ") [1]
+    if(command == "help"):
+        return "Here are a list of sub-commands"    
+    elif(command == "deposit"):
+        if (lowered.count(" ") == 1):
+            return "Please add a bank ID"
+    elif(command == "widthdraw"):
+        #if(array[place].widthdraws == 0):
+        #    return "No Widthdraw tokens avaliable"
+        if (lowered.count(" ") == 1):
+            return "Please add a bank ID"
+    elif(command == "amount"):
+        if (lowered.count(" ") == 1):
+            return "Please add a bank ID"
+    elif(command == "list"):
+        return "Here are the list of banks:\n1. Wordle Bank\n2. Wordle Shitter Bank\n3. Gambling bank\n4. Addict Bank\n5. Safe Bank\n6. Social Bank\n7. Achivement Bnk\n8. Cool Kid Bank\n9. Sleepy Bank\n10. Beef Dip Bank"
+    elif(command == "info"):
+        if (lowered.count(" ") == 1):
+            return "Please add a bank ID"
+        else:
+            #Add Bank info here
+            return {}[int(lowered.split(" ")[2])]
+    else:
+        return "try [,bank help] for more information"
+    
+
+
+    #old bank code
+    #array = getArray()
+    #place = getPlace(ID,array)
+    #return f"You have ${array[place].bank0} in the bank"
 
 def deposit(ID,amount):
     array = getArray()
@@ -72,10 +112,8 @@ def withdraw(ID,amount):
     place = getPlace(ID,array)
     if(int(amount) < 0):
         return "bitch"
-    if(array[place].bank < int(amount)):
+    if(array[place].bank0 < int(amount)):
         return "Not enough money to withdrawal"
-    if(array[place].withdraws == 0):
-        return "No withdraws avaliable"
     array[place].cash += int(amount)
     array[place].bank0 -= int(amount)
     array[place].withdraws -= 1
@@ -827,7 +865,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     print(x)
     #nameID == 1211781489931452447 and 
     if(lowered.startswith("**your group is on a ") and (nameID==475196692807811074 or nameID==1211781489931452447)):
-        if(channel == 1374491816707231914):
+        if(channel == 475196692807811074):
             return wordle(user_input)
         else:
             return "Fuck you Horsey"
@@ -889,7 +927,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     elif lowered.startswith(",deposit"):
         text = deposit(nameID,lowered.split(" ") [1])
     elif lowered == ",bank":
-        text = bank(nameID)
+        text = bank(nameID,lowered)
     elif lowered == ",rig":
         text = "coinflip rigged"
     elif lowered.startswith(",givemoney") and channel in bot_list:
@@ -1018,9 +1056,9 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         ])
     array = getArray()
     #Give achievements
-    if(array[place].achivements.find("Ultra Lucky Man 1") == -1 and randint(1,1000000) == 550):
-        array[place].achivements += "Ultra Lucky Man 1-"
-        text += "\n\nAchivement Get: Ultra Lucky Man 1"
+    if(array[place].achivements.find("Ultra Lucky Man") == -1 and randint(1,1000000) == 550):
+        array[place].achivements += "Ultra Lucky Man-"
+        text += "\n\nAchivement Get: Ultra Lucky Man"
     if(array[place].achivements.find("Rich 1") == -1 and array[place].cash >=1000):
         array[place].achivements += "Rich 1-"
         text += "\n\nAchivement Get: Rich 1"
