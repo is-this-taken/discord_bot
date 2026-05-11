@@ -7,7 +7,7 @@ from playsound import playsound
 
 #The class per person
 class Person:
-    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,withdraws,VC2,VCAlone,VCGroup,profit):
+    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,beefdip,VC2,VCAlone,VCGroup,profit):
          self.id = int(id)
          self.mode = int(mode)
          self.count = int(count)
@@ -31,14 +31,14 @@ class Person:
          self.bank7 = int(bank7)
          self.bank8 = int(bank8)
          self.bank9 = int(bank9)
-         self.withdraws = int(withdraws)
+         self.beefdip = int(beefdip)
          self.VC2 = int(VC2)
          self.VCAlone = int(VCAlone)
          self.VCGroup = int(VCGroup)
          self.profit = int(profit)
     def tostr (self):
         #only used to write to file
-        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.withdraws},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup}"
+        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.beefdip},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup}"
     
 #The class per shop item
 class Shop:
