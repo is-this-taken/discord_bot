@@ -31,7 +31,7 @@ class Person:
          self.bank7 = int(bank7)
          self.bank8 = int(bank8)
          self.bank9 = int(bank9)
-         self.beefdip = int(beefdip)
+         self.beefdip = str(beefdip)
          self.VC2 = int(VC2)
          self.VCAlone = int(VCAlone)
          self.VCGroup = int(VCGroup)
@@ -53,7 +53,7 @@ class Shop:
 def bank(ID,lowered):
 
     array = getArray()
-    place = getPlace(array)
+    place = getPlace(ID,array)
     #subcommands:
     #List: List all banks  and their ID
     #info X:get info about bank X
@@ -65,13 +65,11 @@ def bank(ID,lowered):
         return "try [,bank help] for more information"
     command = lowered.split(" ") [1]
     if(command == "help"):
-        return "Here are a list of sub-commands"    
+        return "Here are a list of sub-commands\nHelp: show this\nDeposit [ID] [Amount]: Deposits money\nWithdraw [ID] [Amount]: Withdraws money\nList: Shows Bank list\nInfo [ID]: Shows Bank information"  
     elif(command == "deposit"):
         if (lowered.count(" ") == 1):
             return "Please add a bank ID"
-    elif(command == "widthdraw"):
-        #if(array[place].widthdraws == 0):
-        #    return "No Widthdraw tokens avaliable"
+    elif(command == "withdraw"):
         if (lowered.count(" ") == 1):
             return "Please add a bank ID"
     elif(command == "amount"):
@@ -84,7 +82,7 @@ def bank(ID,lowered):
             return "Please add a bank ID"
         else:
             #Add Bank info here
-            return {}[int(lowered.split(" ")[2])]
+            return ["Wordle Bank: Get money based on how good you do in the wordle","Wordle Shitter Bank: Get money based on how bad you do in the wordle but don't fail","Gambling Bank: Have a chance to recover money when you lose a gamble but gamble each deposit","Addict Banks: Gain interest the longer you go without gambling","Safe Bank: Gain small interest every day\n[$1000 inveested] Get extra money when you get the hourly money","Social Bank: Get interest for being in voice calls with others","Achievement bank: Get more interest based on how many achievements you have","Cool Kid Bank: A massive amount of interest but it is split amoung each player invested in this bank","Sleepy Bank: Gain interest for time spent in a voice call by yourself","Beef Dip Bank: Interest gained when you beef dip depending on your beef dip tier"][int(lowered.split(" ")[2]) - 1]
     else:
         return "try [,bank help] for more information"
     
@@ -116,7 +114,6 @@ def withdraw(ID,amount):
         return "Not enough money to withdrawal"
     array[place].cash += int(amount)
     array[place].bank0 -= int(amount)
-    array[place].withdraws -= 1
     saveArray(array)
     return "withdrawal sucsessful!"
 
@@ -541,22 +538,11 @@ def coinFlip(message, ID):
         bet = int(message.split(" ")[1].strip())
     except (IndexError, ValueError):
         return "Please enter a valid bet amount like \",coinflip 50\"."
-    
-    rig = False
-    fin = open("achivement","r")
-    rigg = fin.readline().strip()
-    if (rigg.find("1") != -1):
-        rig = True
-
-    fout = open ("achivement","w")
-    fout.write("0")
-    fout.close()
-
     if (bet < 1):
         return "Nope"
     if (bet > array[place].cash):
         return f"Sorry, your bet is too high, your total amount of money is {array[place].cash}"
-    elif(win == 1 and rig==False):
+    elif(win == 1):
         array[place].cash -= bet
         saveArray(array)
         return f"You lost the coinflip and ${bet}"
@@ -816,8 +802,6 @@ def wordle(message):
                     array[place].cash += int(moneyGain*float(array[place].bank0))
                     array[place].sus += susadd
                     array[place].wordle += 1
-                    if(moneyGain == 2.5):
-                        array[place].withdraws += 1
 
 
     saveArray(array)
@@ -856,7 +840,6 @@ def achivements(message,ID):
 
 #Response based on message sent
 def get_response(user_input: str,username, nameID, channel) -> str:
-    print(user_input,username,nameID,channel)
     text = ""
     bot_list = ["john-bot","bot-commands","bot-commands-2"]
     lowered: str = user_input.lower()
@@ -865,7 +848,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     print(x)
     #nameID == 1211781489931452447 and 
     if(lowered.startswith("**your group is on a ") and (nameID==475196692807811074 or nameID==1211781489931452447)):
-        if(channel == 475196692807811074):
+        if(channel == "john-wordle"):
             return wordle(user_input)
         else:
             return "Fuck you Horsey"
@@ -898,14 +881,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         else:
             return "Invalid Quote format, please use this format:\n\"Quote text here\" - author"
         
-    #bunch of random crap    
-    elif lowered.find("help") != -1:
-        num = lowered.count("serious")
-        if(num==0):
-            text = "In a bit"
-        else:
-            text = "give me "+str(5*num)+" minutes"
-
+    
     #dice
     elif ',roll' == lowered [0:5]:
         dice = lowered [6:]
@@ -922,11 +898,13 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = "<@"+str(nameID)+">"
     
     #commands
+    elif lowered == ",beef dip":
+        text = "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
     elif lowered.startswith(",withdraw"):
         text = withdraw(nameID,lowered.split(" ") [1])
     elif lowered.startswith(",deposit"):
         text = deposit(nameID,lowered.split(" ") [1])
-    elif lowered == ",bank":
+    elif lowered.startswith(",bank"):
         text = bank(nameID,lowered)
     elif lowered == ",rig":
         text = "coinflip rigged"
@@ -1044,6 +1022,13 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         addMoney(nameID,1)
         text = "You found a dollar on the ground!"
     
+    #bunch of random crap    
+    elif lowered.find("help") != -1:
+        num = lowered.count("serious")
+        if(num==0):
+            text = "In a bit"
+        else:
+            text = "give me "+str(5*num)+" minutes"
 
 
     #Invalid ccommand
