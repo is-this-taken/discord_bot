@@ -942,11 +942,17 @@ def wordle(message):
                     array[place].sus += susadd
                     array[place].wordle += 1
 
+        coolkid = 0
         #general interest for everyone
+        for i in range(len(array)):
+            if (array[i].bank7 > 0): coolkid += 1
+        if(coolkid == 0):
+            coolkid = 1
         for i in range(len(array)):
             array[i].cash += array[i].bank3 * min(array[i].daysnogamble,30)/1000
             array[i].cash += array[i].bank4 * 0.01
-
+            array[i].cash += array[i].bank6 * array[place].achivements.count("-")/1000
+            array[i].cash += array[i].bank7 / 10 / coolkid
 
     saveArray(array)
     return "Money Gained!!"
@@ -981,6 +987,17 @@ def achivements(message,ID):
             string += "\n"
 
         return string
+def beef_dip(message,ID):
+    array=getArray
+    place = getPlace(ID,array)
+    if (array[place].beefdip != 5):
+        return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
+    for i in range(message.count("@")):
+        tempid = message.split("@")[i+1].split(">")[0]
+        tempplace = getPlace(tempid,array)
+        array[tempplace].money += array[tempplace].bank9 *array[tempplace].beefdip / 100
+
+    return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
 
 #Response based on message sent
 def get_response(user_input: str,username, nameID, channel) -> str:
@@ -1005,7 +1022,6 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         if(array[place].mode >= 1 and array[place].mode <= 5):
             return checkQuote(lowered,nameID)
         
-
     if lowered == '':
         text = "well, you're awfully silent..."
     elif 'hello' in lowered:
@@ -1025,7 +1041,6 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         else:
             return "Invalid Quote format, please use this format:\n\"Quote text here\" - author"
         
-    
     #dice
     elif ',roll' == lowered [0:5]:
         dice = lowered [6:]
@@ -1043,11 +1058,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     
     #commands
     elif lowered == ",beef dip":
-        text = "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
-    elif lowered.startswith(",withdraw"):
-        text = withdraw(nameID,lowered.split(" ") [1])
-    elif lowered.startswith(",deposit"):
-        text = deposit(nameID,lowered.split(" ") [1])
+        text = beef_dip(lowered,nameID)
     elif lowered.startswith(",bank"):
         text = bank(nameID,lowered)
     elif lowered == ",rig":
