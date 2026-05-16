@@ -7,7 +7,7 @@ from playsound import playsound
 
 #The class per person
 class Person:
-    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,beefdip,VC2,VCAlone,VCGroup,profit):
+    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,beefdip,VC2,VCAlone,VCGroup,profit,daysnogamble):
          self.id = int(id)
          self.mode = int(mode)
          self.count = int(count)
@@ -36,9 +36,10 @@ class Person:
          self.VCAlone = int(VCAlone)
          self.VCGroup = int(VCGroup)
          self.profit = int(profit)
+         self.daysnogamble = int(daysnogamble)
     def tostr (self):
         #only used to write to file
-        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.beefdip},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup}"
+        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.beefdip},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup},{self.daysnogamble}"
     
 #The class per shop item
 class Shop:
@@ -48,6 +49,145 @@ class Shop:
         self.stock = int(stock)
     def tostr (self):
         return f"{self.price},{self.item},{self.stock}"
+
+"""deposit monies"""
+def bank_deposit(ID,bank,amount,array,place):
+    if amount < 0:
+        return "bitch"
+    if(array[place].cash < amount):
+        return "Not enough money"
+    if(bank == 1):
+        array[place].bank0 += amount
+        array[place].cash -= amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+    if(bank == 2):
+        array[place].bank1 += amount
+        array[place].cash -= amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+    if(bank == 3):
+        trol = randint(1,10)
+        array[place].cash -= amount
+        if(trol==1):
+            saveArray(array)
+            return "Where did the money go?"
+        array[place].bank2 += amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+    if(bank == 4):
+        array[place].bank3 += amount
+        array[place].cash -= amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+    if(bank == 5):
+        array[place].bank4 += amount
+        array[place].cash -= amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+    if(bank == 6):
+        array[place].bank5 += amount
+        array[place].cash -= amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+    if(bank == 7):
+        array[place].bank6 += amount
+        array[place].cash -= amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+    if(bank == 8):
+        array[place].bank7 += amount
+        array[place].cash -= amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+    if(bank == 9):
+        array[place].bank8 += amount
+        array[place].cash -= amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+    if(bank == 10):
+        array[place].bank9 += amount
+        array[place].cash -= amount
+        saveArray(array)
+        return "Deposited sucsessfully"
+
+"""un-deposit monies"""
+def bank_withdraw(ID,bank,amount,array,place):
+    if amount < 0:
+        return "bitch"
+    if(bank == 1):
+        if(array[place].bank0 < amount):
+            return "Not enough funds"
+        array[place].bank0 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    if(bank == 2):
+        if(array[place].bank1 < amount):
+            return "Not enough funds"
+        array[place].bank1 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    if(bank == 3):
+        if(array[place].bank2 < amount):
+            return "Not enough funds"
+        array[place].bank2 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    if(bank == 4):
+        if(array[place].bank3 < amount*10):
+            return "Not enough funds"
+        array[place].bank3 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    if(bank ==5):
+        if(array[place].bank4 < amount):
+            return "Not enough funds"
+        array[place].bank4 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    if(bank == 6):
+        if(array[place].bank5 < amount):
+            return "Not enough funds"
+        array[place].bank5 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    if(bank == 7):
+        if(array[place].bank6 < amount):
+            return "Not enough funds"
+        array[place].bank6 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    if(bank == 8):
+        if(array[place].bank7 < amount):
+            return "Not enough funds"
+        array[place].bank7 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    if(bank == 9):
+        if(array[place].bank8 < amount):
+            return "Not enough funds"
+        array[place].bank8 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    if(bank == 10):
+        if(array[place].bank9 < amount):
+            return "Not enoug9h funds"
+        array[place].bank9 -= amount
+        array[place].cash += amount
+        saveArray(array)
+        return "Withdrawn sucsessfully"
+    
+
+
 
 """Show bak money"""
 def bank(ID,lowered):
@@ -69,9 +209,14 @@ def bank(ID,lowered):
     elif(command == "deposit"):
         if (lowered.count(" ") == 1):
             return "Please add a bank ID"
+        if (lowered.count(" ") == 2):
+            return "Please add an amount to deposit"
+        return bank_deposit(ID,lowered.split(" ") [2],lowered.split(" ") [3],array,place)
     elif(command == "withdraw"):
         if (lowered.count(" ") == 1):
             return "Please add a bank ID"
+        if (lowered.count(" ") == 2):
+            return "Please add an amount to withdraw"
     elif(command == "amount"):
         if (lowered.count(" ") == 1):
             return "Please add a bank ID"
@@ -92,30 +237,6 @@ def bank(ID,lowered):
     #array = getArray()
     #place = getPlace(ID,array)
     #return f"You have ${array[place].bank0} in the bank"
-
-def deposit(ID,amount):
-    array = getArray()
-    place = getPlace(ID,array)
-    if(int(amount) < 0):
-        return "bitch"
-    if(array[place].cash < int(amount)):
-        return "Not enough money to deposit"
-    array[place].cash -= int(amount)
-    array[place].bank0 += int(amount)
-    saveArray(array)
-    return "deposit sucsessful!"
-
-def withdraw(ID,amount):
-    array = getArray()
-    place = getPlace(ID,array)
-    if(int(amount) < 0):
-        return "bitch"
-    if(array[place].bank0 < int(amount)):
-        return "Not enough money to withdrawal"
-    array[place].cash += int(amount)
-    array[place].bank0 -= int(amount)
-    saveArray(array)
-    return "withdrawal sucsessful!"
 
 """Shows the leaderboard of money"""
 def leaderboard_bank():
@@ -159,6 +280,7 @@ def slots(ID):
     place = getPlace(ID, array)
     slots = ""
 
+    array[place].daysnogamble = 0
     print(array[place].slot1,array[place].slot2,array[place].slot3)
 
     if(array[place].slot3 != 0):
@@ -369,16 +491,19 @@ def getMoney(ID):
         fout = open("hour.txt","w")
         fout.write("0")
         fout.close()
-        array[place].cash += (int(len(e))+1)
+        moneygain = (int(len(e))+1)
+        if(array[place].bank4 >= 1000):
+            moneygain += 5
+        array[place].cash += moneygain
         saveArray(array)
         if(ID == 549031318139174916):
-            return f"Here are your ${(int(len(e))+1)} Whoresey."
+            return f"Here are your ${moneygain} Whoresey."
         elif(ID == 719250188228886620):
-            return f"Here is your ${(int(len(e))+1)} of gambling money you slut"
+            return f"Here is your ${moneygain} of gambling money you slut"
         elif(ID == 552600422016090133):
-            return f"Here is your ${(int(len(e))+1)} for Papa K you slave"
+            return f"Here is your ${moneygain} for Papa K you slave"
         else:
-            return f"You got the Bonus ${(int(len(e))+1)} and now have ${array[place].cash}"
+            return f"You got the Bonus ${moneygain} and now have ${array[place].cash}"
 
 """gets a number, fucks up my pc"""
 def fuckComputer(num):
@@ -531,7 +656,7 @@ def coinFlip(message, ID):
     win = randint(0,1)
     #make sure they exist
     if (place == -1):
-        return "You are not registered, ask Nugit to register you."
+        return "You are not registered, do [,register] to register"
 
     #make sure that they enter a proper amount
     try:
@@ -542,9 +667,15 @@ def coinFlip(message, ID):
         return "Nope"
     if (bet > array[place].cash):
         return f"Sorry, your bet is too high, your total amount of money is {array[place].cash}"
-    elif(win == 1):
+    array[place].daysnogamble = 0
+    if(win == 1):
         array[place].cash -= bet
         saveArray(array)
+        banksave = randint(1,20)
+        if banksave == 20:
+            array[place].cash += min(bet,array[place].bank2)
+            saveArray(array)
+            return f"You lost the coinflip but the gamble bank came in clutch! You lost ${bet-min(bet,array[place].bank2)}"
         return f"You lost the coinflip and ${bet}"
     else:
         array[place].cash += bet
@@ -727,7 +858,7 @@ def getArray():
         text = fin.readline().strip()
         if text == "":
             break
-        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9],text.split(",") [10],text.split(",") [11],text.split(",") [12],text.split(",") [13],text.split(",") [14],text.split(",") [15],text.split(",") [16],text.split(",") [17],text.split(",") [18],text.split(",") [19],text.split(",") [20],text.split(",") [21],text.split(",") [22],text.split(",") [23],text.split(",") [24],text.split(",") [25],text.split(",") [26],text.split(",") [27]))
+        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9],text.split(",") [10],text.split(",") [11],text.split(",") [12],text.split(",") [13],text.split(",") [14],text.split(",") [15],text.split(",") [16],text.split(",") [17],text.split(",") [18],text.split(",") [19],text.split(",") [20],text.split(",") [21],text.split(",") [22],text.split(",") [23],text.split(",") [24],text.split(",") [25],text.split(",") [26],text.split(",") [27],text.split(",") [28]))
         count +=1
     fin.close()
     return array
@@ -764,7 +895,7 @@ def register(message,ID):
     place = getPlace(ID,array)
     if(place!=-1):
         return "you are already registered nerd"
-    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"))
+    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"))
     saveArray(array)
     return "Resitered Sucsessfully"
 
@@ -773,25 +904,32 @@ def wordle(message):
     lines = message.split("\n")
     for i in range(len(lines)-1):
         if(lines[i+1] [0]== "👑" or lines[i+1].startswith(":crown:")):
-            moneyGain = 2.5
+            moneyGain = 0.025
+            shitterGain = 0.002
             susadd = 5
         if(lines[i+1] [0]== "2"):
-            moneyGain = 2.0
+            moneyGain = 0.02
+            shitterGain = 0.001
             susadd = 2
         if(lines[i+1] [0]== "3"):
-            moneyGain = 1.0
+            moneyGain = 0.01
+            shitterGain = 0.00
             susadd = 0
         if(lines[i+1] [0]== "4"):
-            moneyGain = .5
+            moneyGain = 0.005
+            shitterGain = 0.005
             susadd = -1
         if(lines[i+1] [0]== "5"):
-            moneyGain = .25
+            moneyGain = 0.0025
+            shitterGain = 0.005
             susadd = -3 
         if(lines[i+1] [0]== "6"):
             moneyGain = 0
+            shitterGain = 0.005
             susadd = -5
         if(lines[i+1] [0]== "X"):
-            moneyGain = -5.0
+            moneyGain = -0.05
+            shitterGain = -0.1
             susadd = -10
 
         for j in range(lines[i+1].count("@")):
@@ -800,9 +938,21 @@ def wordle(message):
                 place = getPlace(ID, array)
                 if(place != -1):
                     array[place].cash += int(moneyGain*float(array[place].bank0))
+                    array[place].cash += int(shitterGain*float(array[place].bank1))
                     array[place].sus += susadd
                     array[place].wordle += 1
 
+        coolkid = 0
+        #general interest for everyone
+        for i in range(len(array)):
+            if (array[i].bank7 > 0): coolkid += 1
+        if(coolkid == 0):
+            coolkid = 1
+        for i in range(len(array)):
+            array[i].cash += array[i].bank3 * min(array[i].daysnogamble,30)/1000
+            array[i].cash += array[i].bank4 * 0.01
+            array[i].cash += array[i].bank6 * array[place].achivements.count("-")/1000
+            array[i].cash += array[i].bank7 / 10 / coolkid
 
     saveArray(array)
     return "Money Gained!!"
@@ -837,6 +987,17 @@ def achivements(message,ID):
             string += "\n"
 
         return string
+def beef_dip(message,ID):
+    array=getArray
+    place = getPlace(ID,array)
+    if (array[place].beefdip != 5):
+        return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
+    for i in range(message.count("@")):
+        tempid = message.split("@")[i+1].split(">")[0]
+        tempplace = getPlace(tempid,array)
+        array[tempplace].money += array[tempplace].bank9 *array[tempplace].beefdip / 100
+
+    return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
 
 #Response based on message sent
 def get_response(user_input: str,username, nameID, channel) -> str:
@@ -861,7 +1022,6 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         if(array[place].mode >= 1 and array[place].mode <= 5):
             return checkQuote(lowered,nameID)
         
-
     if lowered == '':
         text = "well, you're awfully silent..."
     elif 'hello' in lowered:
@@ -881,7 +1041,6 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         else:
             return "Invalid Quote format, please use this format:\n\"Quote text here\" - author"
         
-    
     #dice
     elif ',roll' == lowered [0:5]:
         dice = lowered [6:]
@@ -899,11 +1058,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     
     #commands
     elif lowered == ",beef dip":
-        text = "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
-    elif lowered.startswith(",withdraw"):
-        text = withdraw(nameID,lowered.split(" ") [1])
-    elif lowered.startswith(",deposit"):
-        text = deposit(nameID,lowered.split(" ") [1])
+        text = beef_dip(lowered,nameID)
     elif lowered.startswith(",bank"):
         text = bank(nameID,lowered)
     elif lowered == ",rig":
@@ -1041,6 +1196,21 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         ])
     array = getArray()
     #Give achievements
+    if(array[place].achivements.find("Beef Dip Tier 1") == -1 and array[place].beefdip >= 1):
+        array[place].achivements += "Beef Dip Tier 1-"
+        text += "\n\nAchivement Get: Beef Dip Tier 1"
+    if(array[place].achivements.find("Beef Dip Tier 2") == -1 and array[place].beefdip >= 2):
+        array[place].achivements += "Beef Dip Tier 2-"
+        text += "\n\nAchivement Get: Beef Dip Tier 2"
+    if(array[place].achivements.find("Beef Dip Tier 3") == -1 and array[place].beefdip >= 3):
+        array[place].achivements += "Beef Dip Tier 3-"
+        text += "\n\nAchivement Get: Beef Dip Tier 3"
+    if(array[place].achivements.find("Beef Dip Tier 4") == -1 and array[place].beefdip >= 4):
+        array[place].achivements += "Beef Dip Tier 4-"
+        text += "\n\nAchivement Get: Beef Dip Tier 4"
+    if(array[place].achivements.find("Beef Dip Tier 5") == -1 and array[place].beefdip >= 5):
+        array[place].achivements += "Beef Dip Tier 5-"
+        text += "\n\nAchivement Get: Beef Dip Tier 5"
     if(array[place].achivements.find("Ultra Lucky Man") == -1 and randint(1,1000000) == 550):
         array[place].achivements += "Ultra Lucky Man-"
         text += "\n\nAchivement Get: Ultra Lucky Man"
