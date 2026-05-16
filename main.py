@@ -4,6 +4,7 @@ import asyncio
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
 from respones import get_response
+from respones import logVC
 import discord
 import asyncio
 
@@ -48,10 +49,8 @@ async def update_vc_file():
                     users_in_vc.add(member.id)
 
             # write to file
-            with open("vc.csv", "a") as f:
-                f.write("\n")
-                for user_id in users_in_vc:
-                    f.write(f"{user_id}\n")
+            logVC(users_in_vc)
+
 
             print(f"Logged {len(users_in_vc)} users in VC")
 

@@ -899,6 +899,26 @@ def register(message,ID):
     saveArray(array)
     return "Resitered Sucsessfully"
 
+def logVC(people):
+    amount = len(people)
+    array = getArray
+    large = (amount >= 8)
+
+    if(len(people) == 1):
+        place = getPlace(people [0],array)
+        array[place].money += array[place].bank8 /100000
+        array[place].VCAlone += 1
+    else:
+        for i in range(len(people)):
+            place = getPlace(people [i],array)
+            array[place].money += array[place].bank5 /10000 * amount
+            array[place].VC2 += 1
+            if large:
+                array[place].VCGroup += 1
+    saveArray(array)
+
+    
+
 def wordle(message):
     array = getArray()
     lines = message.split("\n")
@@ -996,7 +1016,7 @@ def beef_dip(message,ID):
         tempid = message.split("@")[i+1].split(">")[0]
         tempplace = getPlace(tempid,array)
         array[tempplace].money += array[tempplace].bank9 *array[tempplace].beefdip / 100
-
+    saveArray(array)
     return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
 
 #Response based on message sent
@@ -1196,6 +1216,12 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         ])
     array = getArray()
     #Give achievements
+    if(array[place].achivements.find("Mr. Popular") == -1 and array[place].VCGroup >= 60):
+        array[place].achivements += "Mr. Popular-"
+        text += "\n\nAchivement Get: Mr. Popular"
+    if(array[place].achivements.find("Forever Alone") == -1 and array[place].VCAlone >= 1440):
+        array[place].achivements += "Forever Alone-"
+        text += "\n\nAchivement Get: Forever Alone"
     if(array[place].achivements.find("Beef Dip Tier 1") == -1 and array[place].beefdip >= 1):
         array[place].achivements += "Beef Dip Tier 1-"
         text += "\n\nAchivement Get: Beef Dip Tier 1"
