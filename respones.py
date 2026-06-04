@@ -1077,6 +1077,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = "<@"+str(nameID)+">"
     
     #commands
+    elif lowered == ",javan testing things":
+        text = "EVERYBODY GET IN THE CAR WERE LEAVING THIS TOWN NOW"
     elif lowered == ",beef dip":
         text = beef_dip(lowered,nameID)
     elif lowered.startswith(",bank"):
