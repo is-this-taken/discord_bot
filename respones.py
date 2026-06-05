@@ -7,7 +7,7 @@ from playsound import playsound
 
 #The class per person
 class Person:
-    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,beefdip,VC2,VCAlone,VCGroup,profit,daysnogamble):
+    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,beefdip,VC2,VCAlone,VCGroup,profit,daysnogamble,cases):
          self.id = int(id)
          self.mode = int(mode)
          self.count = int(count)
@@ -37,9 +37,11 @@ class Person:
          self.VCGroup = int(VCGroup)
          self.profit = int(profit)
          self.daysnogamble = int(daysnogamble)
+         self.net = int(cash) + int(bank0) + int(bank1) + int(bank2) + int(bank3) + int(bank4) + int(bank5) + int(bank6) + int(bank7) + int(bank8) + int(bank9)
+         self.cases = int(cases)
     def tostr (self):
         #only used to write to file
-        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{int(self.cash)},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.beefdip},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup},{self.daysnogamble}"
+        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{int(self.cash)},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.beefdip},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup},{self.daysnogamble},{self.cases}"
     
 #The class per shop item
 class Shop:
@@ -137,8 +139,10 @@ def bank_withdraw(ID,bank,amount,array,place):
         saveArray(array)
         return "Withdrawn sucsessfully"
     if(bank == 4):
-        if(array[place].bank3 < amount*10) and (array[place].bank3 >= 10):
+        if(amount > array[place].bank3):
             return "Not enough funds"
+        if(array[place].bank3 < amount*10) and (array[place].bank3 >= 10):
+            return "Don't gamble"
         array[place].bank3 -= amount
         array[place].cash += amount
         saveArray(array)
@@ -202,7 +206,7 @@ def bank(ID,lowered):
         return "try [,bank help] for more information"
     command = lowered.split(" ") [1]
     if(command == "help"):
-        return "Here are a list of sub-commands\nHelp: show this\nDeposit [ID] [Amount]: Deposits money\nWithdraw [ID] [Amount]: Withdraws money\nList: Shows Bank list\nInfo [ID]: Shows Bank information\nAmount: Show all your bank values."  
+        return "Here are a list of sub-commands\nHelp: show this\nDeposit [ID] [Amount]: Deposits money\nWithdraw [ID] [Amount]: Withdraws money\nList: Shows Bank list\nInfo [ID]: Shows Bank information\nAmount: Show all your bank values.\nStats: show other stats regarding the bank"  
     elif(command == "deposit"):
         if (lowered.count(" ") == 1):
             return "Please add a bank ID"
@@ -222,9 +226,11 @@ def bank(ID,lowered):
             return "Please add a bank ID"
         else:
             #Add Bank info here
-            return ["Wordle Bank: Get interest amounts based on how good you do in the wordle\nInterest amounts:\nWin: 2.5%\n2: 2%\n3: 1%\n4: 0.5%\n5: 0.25%\n6: 0%\nLose: -5%","Wordle Shitter Bank: Get money based on how bad you do in the wordle but don't fail\nInterest amounts:\nWin: 0.2%\n2: 0.1%\n3: 0%\n4: 0.5%\n5: 0.5%\n6: 1%\nLose: -10%","Gambling Bank: Have a chance to recover money when you lose a gamble but gamble each deposit","Addict Banks: Get 0.X% interest every day where X is the amount of days you go without gambling (Max 30 days)\n\nAbility: [$10 invested] You can only withdraw up to 10% of your money at a time","Safe Bank: Gain a flat, 1% interest every day.\n\nAbility:\n[$1000 inveested] Get an extra $5 when you get the hourly money","Social Bank: Get interest for being in voice calls with others","Achievement bank: Every day, you get 0.X% interest where X is the amount of achivements you have","Cool Kid Bank: A large 20% interest is payed out to each person invested in the bank, but the interest is devided by the amount of people invested in the cool kid bank","Sleepy Bank: Gain interest for time spent in a voice call by yourself","Beef Dip Bank: Whenever you beef dip with a tier 5 beef dipper, You will gain X% interest where X is your beef dip tier.\nDoing better a beef dipping will up your beef dip tier"][int(lowered.split(" ")[2]) - 1]
+            return ["Wordle Bank: Get interest amounts based on how good you do in the wordle\nInterest amounts:\nWin: 2.5%\n2: 2%\n3: 1%\n4: 0.5%\n5: 0.25%\n6: 0%\nLose: -5%","Wordle Shitter Bank: Get money based on how bad you do in the wordle but don't fail\nInterest amounts:\nWin: 0.2%\n2: 0.1%\n3: 0%\n4: 0.5%\n5: 0.5%\n6: 1%\nLose: -10%","Gambling Bank: Whenever you deposit money into this bank, there is a 10% chance it gets gambled away. But if you lose a coinflip, there is a 5% chance you can get up to X dollars back where X is the amount invested or the amount gambled (whichever is lower)","Addict Banks: Get 0.X% interest every day where X is the amount of days you go without gambling (Max 30 days)\n\nAbility: [$10 invested] You can only withdraw up to 10% of your money at a time","Safe Bank: Gain a flat, 1% interest every day.\n\nAbility:\n[$1000 inveested] Get an extra $5 when you get the hourly money","Social Bank: Every hour you are in a voice call, you get X% interest where X is the amount of people in that voice call","Achievement bank: Every day, you get 0.X% interest where X is the amount of achivements you have","Cool Kid Bank: A large 10% interest is payed out to each person invested in the bank, but the interest is divided by the amount of people invested in the cool kid bank","Sleepy Bank: Gain interest for time spent in a voice call by yourself","Beef Dip Bank: Whenever you beef dip with a tier 5 beef dipper, You will gain X% interest where X is your beef dip tier.\nDoing better a beef dipping will up your beef dip tier"][int(lowered.split(" ")[2]) - 1]
     elif(command == "amount"):
         return f"Wordle: {array[place].bank0}\nWordle Shitter: {array[place].bank1}\nGambling: {array[place].bank2}\nAddict: {array[place].bank3}\nSafe: {array[place].bank4}\nSocial: {array[place].bank5}\nAchivement: {array[place].bank6}\nCool Kid: {array[place].bank7}\nSleepy: {array[place].bank8}\nBeef Dip: {array[place].bank9}"
+    elif(command == "stats"):
+        return f"Days without gambling: {array[place].daysnogamble}"
     else:
         return "try [,bank help] for more information"
     
@@ -247,6 +253,24 @@ def leaderboard_bank():
         for j in range(len(array)):
             if int(array[j].bank0) > top:
                 top = int(array[j].bank0)
+                by = array[j].name
+                spot=j
+        text += f"{str(i+1)}. ${str(top)} by {by}\n"
+        array.pop(spot)
+    return text
+
+"""Shows the leaderboard of money"""
+def leaderboard_net():
+    array = getArray()
+    text = ""
+    length = len(array) 
+    for i in range(length):
+        top = -1
+        by = ""
+        spot = -1
+        for j in range(len(array)):
+            if int(array[j].net) > top:
+                top = int(array[j].net)
                 by = array[j].name
                 spot=j
         text += f"{str(i+1)}. ${str(top)} by {by}\n"
@@ -526,6 +550,8 @@ def fuckComputer(num):
         return True
     elif num == 11:
         return True
+    elif num == 12:
+        return True
     else:
         return False
 
@@ -548,6 +574,11 @@ def buyShit(message, ID):
     if(checkOut):
         array[place].cash -= shop[item-1].price
         shop[item-1].stock -= 1
+        print(item)
+        if(item == 12):
+            print(array[place].cases)
+            array[place].cases += 1
+            print(array[place].cases)
         saveArray(array)
         saveShop(shop)
         return f"You have bought {shop[item-1].item}"
@@ -855,7 +886,7 @@ def getArray():
         text = fin.readline().strip()
         if text == "":
             break
-        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9],text.split(",") [10],text.split(",") [11],text.split(",") [12],text.split(",") [13],text.split(",") [14],text.split(",") [15],text.split(",") [16],text.split(",") [17],text.split(",") [18],text.split(",") [19],text.split(",") [20],text.split(",") [21],text.split(",") [22],text.split(",") [23],text.split(",") [24],text.split(",") [25],text.split(",") [26],text.split(",") [27],text.split(",") [28]))
+        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9],text.split(",") [10],text.split(",") [11],text.split(",") [12],text.split(",") [13],text.split(",") [14],text.split(",") [15],text.split(",") [16],text.split(",") [17],text.split(",") [18],text.split(",") [19],text.split(",") [20],text.split(",") [21],text.split(",") [22],text.split(",") [23],text.split(",") [24],text.split(",") [25],text.split(",") [26],text.split(",") [27],text.split(",") [28],text.split(",") [29]))
         count +=1
     fin.close()
     return array
@@ -892,7 +923,7 @@ def register(message,ID):
     place = getPlace(ID,array)
     if(place!=-1):
         return "you are already registered nerd"
-    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"))
+    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"))
     saveArray(array)
     return "Resitered Sucsessfully"
 
@@ -908,7 +939,9 @@ def logVC(people):
     else:
         for i in range(len(people)):
             place = getPlace(people [i],array)
-            array[place].cash += array[place].bank5 /10000 * amount
+            if (randint(1,60) == 7):   
+                array[place].cash += array[place].bank5 /100 * amount
+                print(f"paid {array[place].name} {array[place].bank5 /100 * amount}")
             array[place].VC2 += 1
             if large:
                 array[place].VCGroup += 1
@@ -960,6 +993,7 @@ def wordle(message):
         coolkid = 0
         #general interest for everyone
         for i in range(len(array)):
+            array[i].daysnogamble += 1
             if (array[i].bank7 > 0): coolkid += 1
         if(coolkid == 0):
             coolkid = 1
@@ -967,7 +1001,7 @@ def wordle(message):
             array[i].cash += array[i].bank3 * min(array[i].daysnogamble,30)/1000
             array[i].cash += array[i].bank4 * 0.01
             array[i].cash += array[i].bank6 * array[place].achivements.count("-")/1000
-            array[i].cash += array[i].bank7 / 20 / coolkid
+            array[i].cash += array[i].bank7 / 10 / coolkid
 
     saveArray(array)
     return "Money Gained!!"
@@ -1014,6 +1048,14 @@ def beef_dip(message,ID):
         array[tempplace].cash += array[tempplace].bank9 *array[tempplace].beefdip / 100
     saveArray(array)
     return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
+
+def case(message,ID):
+    array = getArray()
+    place = getPlace(ID,array)
+    print(place)
+    print(array[place].cases)
+    return f"You have {array[place].cases} cases"
+
 
 #Response based on message sent
 def get_response(user_input: str,username, nameID, channel) -> str:
@@ -1089,6 +1131,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = coinFlip(lowered,nameID)
     elif lowered.startswith(",quote") and channel in bot_list:
         text = quoteGame(nameID,lowered)
+    elif lowered.startswith(",case") and channel in bot_list:
+        text = case(lowered,nameID)
     elif lowered == ",count":
         text = "Your counter is now at "+str(count(nameID))
     elif lowered.startswith(",leaderboard"):
@@ -1100,8 +1144,10 @@ def get_response(user_input: str,username, nameID, channel) -> str:
             text = leaderboard_beer()
         elif lowered == ",leaderboard bank":
             text = leaderboard_bank()
+        elif lowered == ",leaderboard net":
+            text = leaderboard_net()
         else:
-            text = "leaderboards: count, money, beer, bank"
+            text = "leaderboards: count, money, beer, bank, net"
     elif ((lowered.find("what") != -1) & (len(lowered)>10) & (lowered.count(" ") > 4)) or(randint(1,1000) == 120):
         text = choice(["Ah shit, here we go again ...",
                       "Let's go, open up, it's time for parkore",
