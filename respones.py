@@ -2,12 +2,12 @@ from random import choice, randint
 import os
 import math
 from os import startfile
-from playsound import playsound
+#from playsound import playsound
 #from youtube import Youtube
 
 #The class per person
 class Person:
-    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,beefdip,VC2,VCAlone,VCGroup,profit,daysnogamble):
+    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,beefdip,VC2,VCAlone,VCGroup,profit,daysnogamble,withdrawTokens,caseCount,caseBuyCredits,caseItems,marketPosted):
          self.id = int(id)
          self.mode = int(mode)
          self.count = int(count)
@@ -37,9 +37,16 @@ class Person:
          self.VCGroup = int(VCGroup)
          self.profit = int(profit)
          self.daysnogamble = int(daysnogamble)
+
+         #case variables - Javan
+         self.withdrawTokens = int(withdrawTokens)
+         self.caseCount = int(caseCount)
+         self.caseBuyCredits = int(caseBuyCredits)
+         self.caseItems = str(caseItems)
+         self.marketPosted = str(marketPosted)
     def tostr (self):
         #only used to write to file
-        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.beefdip},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup},{self.daysnogamble}"
+        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.beefdip},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup},{self.daysnogamble},{self.withdrawTokens},{self.caseCount},{self.caseBuyCredits},{self.caseItems},{self.marketPosted}"
     
 #The class per shop item
 class Shop:
@@ -49,6 +56,166 @@ class Shop:
         self.stock = int(stock)
     def tostr (self):
         return f"{self.price},{self.item},{self.stock}"
+
+"""
+    KFrat case code
+    Author: Javan
+    Written: 4/6/2024
+"""
+"""Defult case message"""
+def case(ID,lowered):
+
+    array = getArray()
+    place = getPlace(ID,array)
+    #subcommands:
+    #help: tell user of all commands
+    #amount: List amount of cases owned
+    #open: Open a case
+    #items: List all items owned
+    #use [item]: Use an item
+    #info: List all case drops and their chances
+
+    if(lowered.count(" ") == 0):
+        return "try [,case help] for more information"
+    command = lowered.split(" ") [1]
+    if(command == "help"):
+        return "Here are a list of sub-commands\nHelp: Show this\nAmount: List amount of cases owned\nOpen: Open a case\nBuyCredits: See how many cases you can buy\nItems: List all items owned\nUse [itemNumber] [Optional - add amount to use]: Use an item\nInfo: List all case drops and their chances"  
+    elif(command == "amount"):
+        if (array[place].caseCount == 1):
+            return f"You have {array[place].caseCount} case."
+        return f"You have {array[place].caseCount} cases."
+    elif(command == "open"):
+        return case_open(ID,array,place)
+    elif(command == "buycredits"):
+        if (array[place].caseBuyCredits == 0):
+            return f"You are unable to buy any cases right now.\nYou can try to buy a case credit from the market or wait until tomorrow."
+        if (array[place].caseBuyCredits == 1):
+            return f"You can buy {array[place].caseBuyCredits} case today."
+        return f"You can buy {array[place].caseBuyCredits} cases today."
+    elif(command == "items"):
+        return case_items(ID,array,place)
+    elif(command == "use"):
+        return case_use(ID,array,place,lowered)
+    elif(command == "info"):
+        return "KFrat case drops:\n22% - 1 Common Badge Token\n 6% - 1 Epic Badge Token\n 2% - 1 Legendary Badge Token\n 6% - 1 Common Badge Breaker Token\n 4% - 1 Epic Badge Breaker Token\n 2% - 1 Legendary Badge Breaker Token\n 2% - 1 Special Badge Breaker Token\n10% - 1 Withdraw Token\n 6% - 3 Withdraw Tokens\n 2% - 9 Withdraw Tokens\n10% - 1 0.1% Interest Token\n 6% - 1 0.5% Interest Token\n 2% - 1 1.0% Interest Token\n 6% - 3 Case Purchace Credits\n 2% - Robery Token\n 6% - 1 CS2 Case\n 2% - 3 CS2 Case\n 2% - 1 KFrat Response Token\n 2% - 1 KFrat DM Token"
+    else:
+        return "try [,case help] for more information"
+
+"""Open a case and give the user a random item, also decrease case count by 1"""
+def case_open(ID,array,place):
+    #check for cases
+    if (array[place].caseCount <= 0):
+        return "You are out of cases, get more from the shop or the market!"
+    #decrease case count
+    array[place].caseCount -= 1
+    saveArray(array)
+
+    #randomly give item
+    itemID = randint(1,50)
+    fin = open("caseRolls.txt","r")
+    for i in range(itemID):
+        itemLine = fin.readline().strip()
+    fin.close()
+
+    #partition item
+    itemID = itemLine[0]+itemLine[1]
+    itemCount = itemLine[3]
+    itemName = itemLine[5:]
+
+    itemCode = itemCount + "-" + itemID
+
+    #add item to inventory
+    if array[place].caseItems == "":
+        array[place].caseItems = itemCode
+    else:
+        array[place].caseItems += f"|{itemCode}"
+    saveArray(array)
+
+    return f"Opening Case...\nNEW ITEM!: {itemCount} {itemName}"
+
+"""Display all items owned by the user"""
+def case_items(ID,array,place):
+    #check for items
+    if array[place].caseItems == "":
+        return "You have no items, open some cases to get items!"
+    
+    #splits item string into array of count-ID
+    itemsList = array[place].caseItems.split("|")
+    itemString = "Your inventory is:\n"
+
+    for i in range(len(itemsList)):
+        itemCount = itemsList[i].split("-") [0]
+        itemID = itemsList[i].split("-") [1]
+
+        #open conetents names
+        fin = open("caseContents.txt","r")
+        for j in range(int(itemID)):
+            itemName = fin.readline().strip()
+        fin.close()
+
+        #addes item index
+        itemString += f"{i+1}. "
+
+        #adds plural
+        if itemCount == "1":
+            itemString += f"{itemCount} {itemName}\n"
+        else:
+            itemString += f"{itemCount} {itemName}s\n"
+        
+    return itemString
+
+def case_use(ID,array,place,lowered):
+    message = "Sorry, something went wrong"
+
+    #check for items
+    if array[place].caseItems == "":
+        return "You have no items, open some cases or buy items from the market!"
+
+    #check for item index
+    if (lowered.count(" ") == 1):
+        return "Please add an item number to use"
+    itemIndex = int(lowered.split(" ") [2]) - 1
+    itemsList = array[place].caseItems.split("|")
+    if itemIndex < 0 or itemIndex >= len(itemsList):
+        return "Sorry, you dont have an item for that item number"
+
+    #check for item amount
+    if (lowered.count(" ") == 3):
+        itemUseAmount = int(lowered.split(" ") [3])
+    else:
+        itemUseAmount = 1
+
+    #get item ID and count
+    itemCount = itemsList[itemIndex].split("-") [0]
+    itemID = itemsList[itemIndex].split("-") [1]
+
+    if itemUseAmount > int(itemCount):
+        return f"You don't have enought of those, you only have {itemCount} of that item"
+
+    #use item and give effect
+    if itemID == "01":
+        array[place].withdrawTokens += itemUseAmount
+        saveArray(array)
+        message = f"You have applied {itemUseAmount} Withdraw Token(s) to your account"
+    if itemID == "02":
+        array[place].cash += int(0.1*array[place].bank10*itemUseAmount)
+        saveArray(array)
+        message = f"You have applied {itemUseAmount} 0.1% intrest token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
+
+    #delete item from itemsList
+    if itemUseAmount == int(itemCount):
+        itemsList.pop(itemIndex)
+    else:
+        itemsList[itemIndex] = f"{int(itemCount) - itemUseAmount}-{itemID}"
+
+    #update array
+    if len(itemsList) == 0:
+        array[place].caseItems = ""
+    else:
+        array[place].caseItems = "|".join(itemsList)
+    saveArray(array)
+
+    return message
 
 """deposit monies"""
 def bank_deposit(ID,bank,amount,array,place):
@@ -508,22 +675,22 @@ def getMoney(ID):
 """gets a number, fucks up my pc"""
 def fuckComputer(num):
     if num == 1:
-        playsound("Z:\Assets\Sounds\\vine-boom.mp3")
+        #playsound("Z:\Assets\Sounds\\vine-boom.mp3")
         return True
     elif num == 2:
-        playsound("Z:\Assets\Voice Lines\\now-its-reyn-time.mp3")
+        #playsound("Z:\Assets\Voice Lines\\now-its-reyn-time.mp3")
         return True
     elif num == 3:
-        playsound("Z:\Assets\Voice Lines\chicken-jockey.mp3")
+        #playsound("Z:\Assets\Voice Lines\chicken-jockey.mp3")
         return True
     elif num == 6:
-        startfile("Z:\Assets\Videos\Saul goodman 3d.mp4")
+        #startfile("Z:\Assets\Videos\Saul goodman 3d.mp4")
         return True
     elif num == 7:
-        startfile("Z:\Assets\Videos\PARKOUR CIVILIZATION.mp4")
+        #startfile("Z:\Assets\Videos\PARKOUR CIVILIZATION.mp4")
         return True
     elif num == 9:
-        playsound("Z:\Assets\Voice Lines\\flint-and-steel.mp3")
+        #playsound("Z:\Assets\Voice Lines\\flint-and-steel.mp3")
         return True
     elif num == 10:
         return True
@@ -858,7 +1025,7 @@ def getArray():
         text = fin.readline().strip()
         if text == "":
             break
-        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9],text.split(",") [10],text.split(",") [11],text.split(",") [12],text.split(",") [13],text.split(",") [14],text.split(",") [15],text.split(",") [16],text.split(",") [17],text.split(",") [18],text.split(",") [19],text.split(",") [20],text.split(",") [21],text.split(",") [22],text.split(",") [23],text.split(",") [24],text.split(",") [25],text.split(",") [26],text.split(",") [27],text.split(",") [28]))
+        array.append(Person(text.split(",") [0],text.split(",") [1],text.split(",") [2],text.split(",") [3],text.split(",") [4],text.split(",") [5],text.split(",") [6],text.split(",") [7],text.split(",") [8],text.split(",") [9],text.split(",") [10],text.split(",") [11],text.split(",") [12],text.split(",") [13],text.split(",") [14],text.split(",") [15],text.split(",") [16],text.split(",") [17],text.split(",") [18],text.split(",") [19],text.split(",") [20],text.split(",") [21],text.split(",") [22],text.split(",") [23],text.split(",") [24],text.split(",") [25],text.split(",") [26],text.split(",") [27],text.split(",") [28],text.split(",") [29],text.split(",") [30],text.split(",") [31],text.split(",") [32],text.split(",") [33]))
         count +=1
     fin.close()
     return array
@@ -895,7 +1062,7 @@ def register(message,ID):
     place = getPlace(ID,array)
     if(place!=-1):
         return "you are already registered nerd"
-    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"))
+    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"))
     saveArray(array)
     return "Resitered Sucsessfully"
 
@@ -1077,8 +1244,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = "<@"+str(nameID)+">"
     
     #commands
-    elif lowered == ",javan testing things":
-        text = "EVERYBODY GET IN THE CAR WERE LEAVING THIS TOWN NOW"
+    elif lowered.startswith(",case"):
+        text = case(nameID,lowered)
     elif lowered == ",beef dip":
         text = beef_dip(lowered,nameID)
     elif lowered.startswith(",bank"):
@@ -1110,7 +1277,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
             text = "leaderboards: count, money, beer, bank"
     elif ((lowered.find("what") != -1) & (len(lowered)>10) & (lowered.count(" ") > 4)) or(randint(1,1000) == 120):
         text = choice(["Ah shit, here we go again ...",
-                      "Let's go, open up, it's time for parkore",
+                      "Let's go, open up, it's time for parkour",
                       "What will the next act entail?",
                       "It's becuase this amuses me",
                       "How many times has it been now...",
