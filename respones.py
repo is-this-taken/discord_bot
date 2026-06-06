@@ -59,6 +59,126 @@ class Shop:
     def tostr (self):
         return f"{self.price},{self.item},{self.stock}"
 
+
+"""
+    Market code
+    Author: Javan
+"""
+def market(ID,lowered):
+    array = getArray()
+    place = getPlace(ID,array)
+    #subcommands:
+    #help: tell user of all commands
+    #view: see whats on the market
+    #post: add a listing to the market
+    #buy: purchace item off the market
+    #info: how the market works
+
+    if(lowered.count(" ") == 0):
+        return "try [,market help] for more information"
+    command = lowered.split(" ") [1]
+    if(command == "help"):
+        return "Here are a list of sub-commands\nHelp: Show this\nView: See what's on the market\nPost [Item] [Quantity] [Price]: Add a listing to the market\nBuy: Purchace item from the market\nInfo: How the market works"  
+    elif(command == "view"):
+        return market_view(ID,array,place)
+    elif(command == "post"):
+        return market_post(ID,array,place,lowered)
+    elif(command == "buy"):
+        return market_buy(ID,array,place)
+    elif(command == "info"):
+        return "Any user can place a item on the market for a price and any user can buy this item for the price listed.\nIf you have posted a listing on accident or would like to remove a listing, just use [,market buy] to buy the item from yourself."
+    else:
+        return "try [,market help] for more information"
+
+def market_view(ID,array,place):
+    return "Function under construction"
+
+def market_post(ID,array,place,lowered):
+    message = "Sorry, something went wrong"
+
+    #check for items
+    if array[place].caseItems == "":
+        return "You have no items, open some cases or buy items from the market!"
+
+    #check for item index
+    if (lowered.count(" ") == 1):
+        return "Please add an item number to post"
+    
+    if (lowered.count(" ") == 2):
+        return "Please add an amount of this item to post"
+    
+    if (lowered.count(" ") == 3):
+        return "Please add a price to sell for"
+
+    #partition message into vars
+    itemIndex = int(lowered.split(" ") [2]) - 1
+    itemUseAmount = int(lowered.split(" ") [3])
+    itemPrice = int(lowered.split(" ") [4])
+    itemsList = array[place].caseItems.split("|")
+    if itemIndex < 0 or itemIndex >= len(itemsList):
+        return "Sorry, you don't have an item for that item number"
+
+
+    #get item ID and count
+    itemCount = []
+    itemID = []
+    for i in range(len(itemsList)):
+        itemCount.append(itemsList[i].split("-") [0])
+        itemID.append(itemsList[i].split("-") [1])
+
+    if int(itemCount[itemIndex]) < itemUseAmount:
+        return "Sorry, you don't have enough of these items"
+
+    #adds item to market
+    marketCode = f"{itemUseAmount}-{itemID[itemIndex]}-{itemPrice}"
+    if array[place].marketPosted == "":
+        array[place].marketPosted = marketCode
+    else:
+        array[place].marketPosted += f"|{marketCode}"
+    saveArray(array)
+
+    #remove item from your inventory
+    array[place].caseItems = ""
+    for i in range(len(itemsList)):
+        if int(itemID[i])-1 == int(itemIndex):
+            if int(itemCount[i]) - itemUseAmount > 0:
+                itemNew = f"{int(itemCount[i]) - itemUseAmount}-{itemID[i]}"
+                if array[place].caseItems == "":
+                    array[place].caseItems += itemNew
+                else:
+                    array[place].caseItems += f"|{itemNew}"
+        else:
+            if array[place].caseItems == "":
+                array[place].caseItems += itemsList[i]
+            else:
+                array[place].caseItems += f"|{itemsList[i]}"
+    saveArray(array)
+
+    orderMarket(array,place)
+
+    #get item name
+    itemName = ""
+    fin = open("caseContents.txt","r")
+    linesRead = 0
+    while True:
+        text = fin.readline().strip()
+        if text == "":
+            break
+        if itemIndex == linesRead:
+            itemName = text
+        linesRead += 1
+
+    if itemUseAmount == 1:
+        return f"You have posted {itemUseAmount} {itemName} for k${itemPrice}"
+    return f"You have posted {itemUseAmount} {itemName}s for k${itemPrice}"
+
+def market_buy(ID,array,place):
+    return "Function under construction"
+
+"""
+    Badges code
+    Author: Javan
+"""
 """"Updates and organises all badges"""
 def updateBadges(array):
     ID = 0
@@ -158,7 +278,6 @@ def badges(ID):
 """
     KFrat case code
     Author: Javan
-    Written: 4/6/2024
 """
 """Defult case message"""
 def case(ID,lowered):
@@ -272,6 +391,44 @@ def orderItems(array,place):
                 array[place].caseItems = itemCode
             else:
                 array[place].caseItems += f"|{itemCode}"
+            IDcount += 1
+    saveArray(array)
+
+def orderMarket(array,place):
+    itemsList = array[place].marketPosted.split("|")
+    itemCount = []
+    itemID = []
+    for i in range(len(itemsList)):
+        itemCount.append(itemsList[i].split("-") [0])
+        itemID.append(itemsList[i].split("-") [1])
+
+    #get max ID value
+    max = 0
+    for i in range(len(itemID)):
+        if int(itemID[i]) > max:
+            max = int(itemID[i])
+    
+    sortedItemID = []
+    sortedItemID = sorted(itemID)
+    IDcount = 0
+    array[place].marketPosted = ""
+    #search thought all item, adds counts of the same item ID
+    for i in range(1,max+1):
+        countInThisID = 0
+        checkForThis = ""
+        if i < 10:
+            checkForThis += "0"
+        checkForThis += str(i)
+        if checkForThis in itemID:
+            for j in range(len(itemsList)):
+                if i == int(itemID[j]):
+                    countInThisID += int(itemCount[j])
+            
+            itemCode = str(countInThisID) + "-" + checkForThis + "-" + itemsList[IDcount].split("-") [2]
+            if array[place].marketPosted == "":
+                array[place].marketPosted = itemCode
+            else:
+                array[place].marketPosted += f"|{itemCode}"
             IDcount += 1
     saveArray(array)
 
@@ -1609,6 +1766,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = "<@"+str(nameID)+">"
     
     #commands
+    elif lowered.startswith(",market"):
+        text = market(nameID,lowered)
     elif lowered == ",badge" or lowered == ",badges":
         text = badges(nameID)
     elif lowered.startswith(",case"):
