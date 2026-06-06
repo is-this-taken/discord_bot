@@ -229,7 +229,51 @@ def case_open(ID,array,place):
         array[place].caseItems += f"|{itemCode}"
     saveArray(array)
 
+    orderItems(array,place)
+
     return f"Opening Case...\nNEW ITEM!: {itemCount} {itemName}"
+
+"""
+Orders Items in inventory when called
+THERE MUST BE 1 ITEM IN array[place].caseItems
+"""
+def orderItems(array,place):
+    itemsList = array[place].caseItems.split("|")
+    itemCount = []
+    itemID = []
+    for i in range(len(itemsList)):
+        itemCount.append(itemsList[i].split("-") [0])
+        itemID.append(itemsList[i].split("-") [1])
+
+    #get max ID value
+    max = 0
+    for i in range(len(itemID)):
+        if int(itemID[i]) > max:
+            max = int(itemID[i])
+    
+    sortedItemID = []
+    sortedItemID = sorted(itemID)
+    IDcount = 0
+    array[place].caseItems = ""
+    #search thought all item, adds counts of the same item ID
+    for i in range(1,max+1):
+        countInThisID = 0
+        checkForThis = ""
+        if i < 10:
+            checkForThis += "0"
+        checkForThis += str(i)
+        if checkForThis in itemID:
+            for j in range(len(itemsList)):
+                if i == int(itemID[j]):
+                    countInThisID += int(itemCount[j])
+            
+            itemCode = str(countInThisID) + "-" + checkForThis
+            if array[place].caseItems == "":
+                array[place].caseItems = itemCode
+            else:
+                array[place].caseItems += f"|{itemCode}"
+            IDcount += 1
+    saveArray(array)
 
 """Display all items owned by the user"""
 def case_items(ID,array,place):
@@ -291,49 +335,48 @@ def case_use(ID,array,place,lowered):
     if itemUseAmount > int(itemCount):
         return f"You don't have enought of those, you only have {itemCount} of that item"
 
-    if itemID == "1":
+    if itemID == "01":
         array[place].withdrawTokens += itemUseAmount
         saveArray(array)
         message = f"You have applied {itemUseAmount} Withdraw Token(s) to your account"
 
-    elif itemID == "2":
+    elif itemID == "02":
         array[place].cash += int(0.1*array[place].bank10*itemUseAmount)
         saveArray(array)
         message = f"You have applied {itemUseAmount} 0.1% Intrest Token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
 
-    elif itemID == "3":
+    elif itemID == "03":
         array[place].cash += int(0.5*array[place].bank10*itemUseAmount)
         saveArray(array)
         message = f"You have applied {itemUseAmount} 0.5% Intrest Token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
 
-    elif itemID == "4":
+    elif itemID == "04":
         array[place].cash += int(array[place].bank10*itemUseAmount)
         saveArray(array)
         message = f"You have applied {itemUseAmount} 1.0% Intrest Token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
 
-    elif itemID == "5":
+    elif itemID == "05":
         totalStolen = 0
         for i in range(len(array)):
             if i != place:
                 array[place].cash += array[i].bank10*0.02*itemUseAmount
                 totalStolen += array[i].bank10*0.02*itemUseAmount
-            if i != place:
                 array[i].bank10 -= array[i].bank10*0.02*itemUseAmount
         saveArray(array)
         message = f"You have used {itemUseAmount} Robery Token(s)\nYou have stolen ${totalStolen} from other users case banks"
 
-    elif itemID == "6":
+    elif itemID == "06":
         #array[place].cases += itemUseAmount
         #saveArray(array)
         message = f"You have gained {itemUseAmount} CS2 Case(s)"
 
-    elif itemID == "7":
+    elif itemID == "07":
         message = f"You have used {itemUseAmount} KFrat Response Token(s)\nPlease DM Ivan to add your custom response(s)"
 
-    elif itemID == "8":
+    elif itemID == "08":
         message = f"You have used {itemUseAmount} KFrat DM Token(s)\nPlease DM Ivan to add your custom DM(s)"
 
-    elif itemID == "9":
+    elif itemID == "09":
         message = breakBadgeToken(itemUseAmount, "Common")
         if message.startswith("Sorry, no one owns any more "):
             itemUseAmount = 0
@@ -442,7 +485,7 @@ def breakBadgeToken(itemUseAmount, rarity):
         fout = open("badgeList.txt","w")
         inUseBadgeCount = 0
         for i in range(fileLen):
-            if badgeArray[i][0] == "0":
+            if badgeArray[i][0] == "0" and badgeArray[i][1] == (rarity[0].lower()):
                 inUseBadgeCount += 1
             if inUseBadgeCount == badgeToTakeAway:
                 fout.write("1"+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
