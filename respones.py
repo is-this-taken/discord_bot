@@ -414,10 +414,6 @@ def breakBadgeToken(itemUseAmount, rarity):
     message = ""
     amountLeft = itemUseAmount
     for i in range(itemUseAmount):
-        numCommon = 0
-        numEpic = 0
-        numLegendary = 0
-
         #create array
         badgeArray = []
         fileLen = 0
@@ -428,28 +424,14 @@ def breakBadgeToken(itemUseAmount, rarity):
                 break
             fileLen += 1
             badgeArray.append([text[0],text[1],text[5:]])
-
-            #gets how many of each rarity there is
-            if text[1] == "c":
-                numCommon += 1
-            if text[1] == "e":
-                numEpic += 1
-            if text[1] == "l":
-                numLegendary += 1
         fin.close()
-
-        previousRarityCount = 0
-        if rarity == "Epic":
-            previousRarityCount = numCommon
-        if rarity == "Legendary":
-            previousRarityCount = numCommon + numEpic
 
 
         available = 0
         for i in range(len(badgeArray)):
             if badgeArray[i][0] == "0" and badgeArray[i][1] == (rarity[0].lower()):
                 available += 1
-
+        
         #break on no badges
         if (available == 0):
             message += f"Sorry, no one owns any more {rarity} Badges, your token(s) have been returned to you."
@@ -462,7 +444,7 @@ def breakBadgeToken(itemUseAmount, rarity):
         for i in range(fileLen):
             if badgeArray[i][0] == "0":
                 inUseBadgeCount += 1
-            if inUseBadgeCount == badgeToTakeAway+previousRarityCount:
+            if inUseBadgeCount == badgeToTakeAway:
                 fout.write("1"+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
                 inUseBadgeCount += 1
             else:
@@ -470,7 +452,7 @@ def breakBadgeToken(itemUseAmount, rarity):
         fout.close()
         amountLeft -= 1
 
-    message = f"You have used {itemUseAmount - amountLeft} {rarity} Badge Breaker Token(s)\n{itemUseAmount - amountLeft} {rarity} Badge(s) have been destroyed from a random users inventory"
+    message += f"You have used {itemUseAmount - amountLeft} {rarity} Badge Breaker Token(s)\n{itemUseAmount - amountLeft} {rarity} Badge(s) have been destroyed from a random users inventory"
 
     return message
 
