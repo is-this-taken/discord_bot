@@ -59,6 +59,51 @@ class Shop:
     def tostr (self):
         return f"{self.price},{self.item},{self.stock}"
 
+""""Updates and organises all badges"""
+def updateBadges(array):
+    ID = 0
+    for i in range(len(array)):
+        place = getPlace(ID,array)
+        #splits badge string into array of count-ID
+        badgesID = array[place].badges.split("|")
+        newBadgesID = []
+        fileLen = 0
+
+        #remove and badges that don't exist
+        count = 0
+        iBadges = 0
+        fin = open("badgeList.txt","r")
+        while True:
+            line = fin.readline().strip()
+            if line == "":
+                break
+            fileLen += 1
+            
+            if str(count) in badgesID:
+                if line[0] == '0':
+                    newBadgesID.append(badgesID[iBadges])
+                iBadges += 1
+            count += 1
+        fin.close()
+
+        #order badges
+        badgesID = newBadgesID
+        newBadgesID = []
+        for i in range(fileLen):
+            if str(i) in badgesID:
+                newBadgesID.append(i)
+
+        badgesID = newBadgesID
+        array[place].badges = ""
+        saveArray(array)
+        for i in range(len(badgesID)):
+            if array[place].badges == "":
+                array[place].badges = str(badgesID[i])
+            else:
+                array[place].badges += f"|{badgesID[i]}"
+        saveArray(array)
+        ID += 1
+
 """"Show off your badges"""
 def badges(ID):
     array = getArray()
@@ -246,27 +291,27 @@ def case_use(ID,array,place,lowered):
     if itemUseAmount > int(itemCount):
         return f"You don't have enought of those, you only have {itemCount} of that item"
 
-    if itemID == "01":
+    if itemID == "1":
         array[place].withdrawTokens += itemUseAmount
         saveArray(array)
         message = f"You have applied {itemUseAmount} Withdraw Token(s) to your account"
 
-    if itemID == "02":
+    elif itemID == "2":
         array[place].cash += int(0.1*array[place].bank10*itemUseAmount)
         saveArray(array)
         message = f"You have applied {itemUseAmount} 0.1% Intrest Token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
 
-    if itemID == "03":
+    elif itemID == "3":
         array[place].cash += int(0.5*array[place].bank10*itemUseAmount)
         saveArray(array)
         message = f"You have applied {itemUseAmount} 0.5% Intrest Token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
 
-    if itemID == "04":
+    elif itemID == "4":
         array[place].cash += int(array[place].bank10*itemUseAmount)
         saveArray(array)
         message = f"You have applied {itemUseAmount} 1.0% Intrest Token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
 
-    if itemID == "05":
+    elif itemID == "5":
         totalStolen = 0
         for i in range(len(array)):
             if i != place:
@@ -277,196 +322,75 @@ def case_use(ID,array,place,lowered):
         saveArray(array)
         message = f"You have used {itemUseAmount} Robery Token(s)\nYou have stolen ${totalStolen} from other users case banks"
 
-    if itemID == "06":
-        array[place].cases += itemUseAmount
-        saveArray(array)
+    elif itemID == "6":
+        #array[place].cases += itemUseAmount
+        #saveArray(array)
         message = f"You have gained {itemUseAmount} CS2 Case(s)"
 
-    if itemID == "07":
+    elif itemID == "7":
         message = f"You have used {itemUseAmount} KFrat Response Token(s)\nPlease DM Ivan to add your custom response(s)"
 
-    if itemID == "08":
+    elif itemID == "8":
         message = f"You have used {itemUseAmount} KFrat DM Token(s)\nPlease DM Ivan to add your custom DM(s)"
 
-    if itemID == "09":
-        amountLeft = itemUseAmount
-        for i in range(itemUseAmount):
-            #create array
-            badgeArray = []
-            fin = open("badgeList.txt","r")
-            while True:
-                text = fin.readline().strip()
-                if text== "":
-                    break
-                badgeArray.append([text[0],text[1],text[5:]])
-            fin.close()
-
-            available = 0
-            for i in range(len(badgeArray)):
-                if badgeArray[i][0] == "0" and badgeArray[i][1] == "c":
-                    available += 1
-
-            #break on no badges
-            if (available == 0):
-                return "Sorry, no one owns any more Common Badges, your token(s) have been returned to you."
-                break
-
-            badgeToTakeAway = randint(0,available)
-
-            #make badge available
-            fout = open("badgeList.txt","w")
-            for i in range(len(badgeArray)):
-                if i == badgeToTakeAway:
-                    fout.write("1"+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
-                else:
-                    fout.write(badgeArray[i][0]+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
-            fout.close()
-            amountLeft -= 1
+    elif itemID == "9":
+        message = breakBadgeToken(itemUseAmount, "Common")
+        if message.startswith("Sorry, no one owns any more "):
+            itemUseAmount = 0
+        updateBadges(array)
         
-        message = f"You have used {itemUseAmount - amountLeft} Common Badge Breaker Token(s)\n{itemUseAmount - amountLeft} Common Badge(s) have been destroyed from other users inventories"
+    elif itemID == "10":
+        message = breakBadgeToken(itemUseAmount, "Epic")
+        if message.startswith("Sorry, no one owns any more "):
+            itemUseAmount = 0
+        updateBadges(array)
 
-    if itemID == "10":
-        message = f"You have used {itemUseAmount - amountLeft} Epic Badge Breaker Token(s)\n{itemUseAmount - amountLeft} Epic Badge(s) have been destroyed from other users inventories"
-
-    if itemID == "11":
-        message = f"You have used {itemUseAmount - amountLeft} Legendary Badge Breaker Token(s)\n{itemUseAmount - amountLeft} Legendary Badge(s) have been destroyed from other users inventories"
-
-    if itemID == "12":
-        message = f"You have used {itemUseAmount - amountLeft} Special Badge Breaker Token(s)\n{itemUseAmount - amountLeft} Special Badge(s) have been destroyed from other users inventories"
-
-    if itemID == "13":
+    elif itemID == "11":
+        message = breakBadgeToken(itemUseAmount, "Legendary")
+        if message.startswith("Sorry, no one owns any more "):
+            itemUseAmount = 0
+        updateBadges(array)
+        
+    elif itemID == "12":
+        message = breakBadgeToken(itemUseAmount, "Special")
+        if message.startswith("Sorry, no one owns any more "):
+            itemUseAmount = 0
+        updateBadges(array)
+        
+    elif itemID == "13":
         message = ""
         if itemUseAmount != 1:
             message += "Sorry, you can only open 1 badge at a time.\n"
         itemUseAmount = 1
+        addToMessage = openBadgeToken(array, place, "Common")
+        if addToMessage.startswith("Sorry, there are no remaining "):
+            itemUseAmount = 0
+        message += addToMessage
+        updateBadges(array)
 
-        #create array
-        badgeArray = []
-        fin = open("badgeList.txt","r")
-        while True:
-            text = fin.readline().strip()
-            if text== "":
-                break
-            badgeArray.append([text[0],text[1],text[5:]])
-        fin.close()
-
-        available = 0
-        for i in range(len(badgeArray)):
-            if badgeArray[i][0] == "1" and badgeArray[i][1] == "c":
-                available += 1
-
-        #break on no badges
-        if (available == 0):
-            return "Sorry, there are no remaining Common Badges, your token had been returned to you."
-
-        badgeToAdd = randint(0,(available-1))
-        message += f"You have used a Common Badge Token\nYou found the ...\n{badgeArray[badgeToAdd][2]} Badge"
-
-        #add badge to account
-        if array[place].badges == "":
-            array[place].badges = str(badgeToAdd)
-        else:
-            array[place].badges += f"|{badgeToAdd}"
-        saveArray(array)
-
-        #make badge unavailable
-        fout = open("badgeList.txt","w")
-        for i in range(len(badgeArray)):
-            if i == badgeToAdd:
-                fout.write("0"+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
-            else:
-                fout.write(badgeArray[i][0]+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
-        fout.close()
-
-    if itemID == "14":
+    elif itemID == "14":
         message = ""
         if itemUseAmount != 1:
-            message += "Sorry, you can only open 1 badge at a time."
+            message += "Sorry, you can only open 1 badge at a time.\n"
         itemUseAmount = 1
+        addToMessage = openBadgeToken(array, place, "Epic")
+        if addToMessage.startswith("Sorry, there are no remaining "):
+            itemUseAmount = 0
+        message += addToMessage
+        updateBadges(array)
 
-        #create array
-        badgeArray = []
-        fin = open("badgeList.txt","r")
-        while True:
-            text = fin.readline().strip()
-            if text== "":
-                break
-            badgeArray.append([text[0],text[1],text[5:]])
-        fin.close()
-
-        available = 0
-        for i in range(len(badgeArray)):
-            if badgeArray[i][0] == "1" and badgeArray[i][1] == "c":
-                available += 1
-
-        #break on no badges
-        if (available == 0):
-            return "Sorry, there are no remaining Common Badges, your token had been returned to you."
-
-        badgeToAdd = randint(0,(available-1))
-        message += f"You have used an Epic Badge Token\nYou found the ...\n{badgeArray[badgeToAdd][2]} Badge"
-
-        #add badge to account
-        if array[place].badges == "":
-            array[place].badges = str(badgeToAdd)
-        else:
-            array[place].badges += f"|{badgeToAdd}"
-        saveArray(array)
-
-        #make badge unavailable
-        fout = open("badgeList.txt","w")
-        for i in range(len(badgeArray)):
-            if i == badgeToAdd:
-                fout.write("0"+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
-            else:
-                fout.write(badgeArray[i][0]+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
-        fout.close()
-
-    if itemID == "15":
+    elif itemID == "15":
         message = ""
         if itemUseAmount != 1:
-            message += "Sorry, you can only open 1 badge at a time."
+            message += "Sorry, you can only open 1 badge at a time.\n"
         itemUseAmount = 1
+        addToMessage = openBadgeToken(array, place, "Legendary")
+        if addToMessage.startswith("Sorry, there are no remaining "):
+            itemUseAmount = 0
+        message += addToMessage
+        updateBadges(array)
 
-        #create array
-        badgeArray = []
-        fin = open("badgeList.txt","r")
-        while True:
-            text = fin.readline().strip()
-            if text== "":
-                break
-            badgeArray.append([text[0],text[1],text[5:]])
-        fin.close()
-
-        available = 0
-        for i in range(len(badgeArray)):
-            if badgeArray[i][0] == "1" and badgeArray[i][1] == "c":
-                available += 1
-
-        #break on no badges
-        if (available == 0):
-            return "Sorry, there are no remaining Common Badges, your token had been returned to you."
-
-        badgeToAdd = randint(0,(available-1))
-        message += f"You have used a Legendary Badge Token\nYou found the ...\n{badgeArray[badgeToAdd][2]} Badge"
-
-        #add badge to account
-        if array[place].badges == "":
-            array[place].badges = str(badgeToAdd)
-        else:
-            array[place].badges += f"|{badgeToAdd}"
-        saveArray(array)
-
-        #make badge unavailable
-        fout = open("badgeList.txt","w")
-        for i in range(len(badgeArray)):
-            if i == badgeToAdd:
-                fout.write("0"+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
-            else:
-                fout.write(badgeArray[i][0]+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
-        fout.close()
-
-    if itemID == "16":
+    elif itemID == "16":
         array[place].caseBuyCredits += itemUseAmount
         saveArray(array)
         message = f"You have used {itemUseAmount} Case Purchace Credit(s)\nYou can now buy {itemUseAmount} more cases from the shop today"
@@ -483,6 +407,141 @@ def case_use(ID,array,place,lowered):
     else:
         array[place].caseItems = "|".join(itemsList)
     saveArray(array)
+
+    return message
+
+def breakBadgeToken(itemUseAmount, rarity):
+    message = ""
+    amountLeft = itemUseAmount
+    for i in range(itemUseAmount):
+        numCommon = 0
+        numEpic = 0
+        numLegendary = 0
+
+        #create array
+        badgeArray = []
+        fileLen = 0
+        fin = open("badgeList.txt","r")
+        while True:
+            text = fin.readline().strip()
+            if text== "":
+                break
+            fileLen += 1
+            badgeArray.append([text[0],text[1],text[5:]])
+
+            #gets how many of each rarity there is
+            if text[1] == "c":
+                numCommon += 1
+            if text[1] == "e":
+                numEpic += 1
+            if text[1] == "l":
+                numLegendary += 1
+        fin.close()
+
+        previousRarityCount = 0
+        if rarity == "Epic":
+            previousRarityCount = numCommon
+        if rarity == "Legendary":
+            previousRarityCount = numCommon + numEpic
+
+
+        available = 0
+        for i in range(len(badgeArray)):
+            if badgeArray[i][0] == "0" and badgeArray[i][1] == (rarity[0].lower()):
+                available += 1
+
+        #break on no badges
+        if (available == 0):
+            message += f"Sorry, no one owns any more {rarity} Badges, your token(s) have been returned to you."
+            break
+
+        badgeToTakeAway = randint(1,available)
+        #make badge available
+        fout = open("badgeList.txt","w")
+        inUseBadgeCount = 0
+        for i in range(fileLen):
+            if badgeArray[i][0] == "0":
+                inUseBadgeCount += 1
+            if inUseBadgeCount == badgeToTakeAway+previousRarityCount:
+                fout.write("1"+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
+                inUseBadgeCount += 1
+            else:
+                fout.write(badgeArray[i][0]+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
+        fout.close()
+        amountLeft -= 1
+
+    message = f"You have used {itemUseAmount - amountLeft} {rarity} Badge Breaker Token(s)\n{itemUseAmount - amountLeft} {rarity} Badge(s) have been destroyed from a random users inventory"
+
+    return message
+
+"""Used to open a badge and apply to your profile"""
+def openBadgeToken(array, place, rarity):
+    message = ""
+    numCommon = 0
+    numEpic = 0
+    numLegendary = 0
+
+    #create array
+    badgeArray = []
+    fin = open("badgeList.txt","r")
+    fileLen = 0
+    while True:
+        text = fin.readline().strip()
+        fileLen += 1
+        if text== "":
+            break
+        badgeArray.append([text[0],text[1],text[5:]])
+
+        #gets how many of each rarity there is
+        if text[1] == "c":
+            numCommon += 1
+        if text[1] == "e":
+            numEpic += 1
+        if text[1] == "l":
+            numLegendary += 1
+    fin.close()
+
+    previousRarityCount = 0
+    if rarity == "Epic":
+        previousRarityCount = numCommon
+    if rarity == "Legendary":
+        previousRarityCount = numCommon + numEpic
+
+    available = 0
+    for i in range(len(badgeArray)):
+        if badgeArray[i][0] == "1" and badgeArray[i][1] == (rarity[0].lower()):
+            available += 1
+
+    #break on no badges
+    if (available == 0):
+        return f"Sorry, there are no remaining {rarity} Badges, your token had been returned to you."
+
+    randy = randint(0,available-1)
+    count = 0
+    badgeToAdd = 0
+    for i in range(fileLen):
+        if badgeArray[i][0] == "1":
+            if count == randy+previousRarityCount:
+                badgeToAdd = i
+                break
+            count += 1
+    message += f"You have used a {rarity} Badge Token\nYou found the ...\n{badgeArray[badgeToAdd][2]} Badge"
+
+    #add badge to account
+    if array[place].badges == "":
+        array[place].badges = str(badgeToAdd)
+    else:
+        array[place].badges += f"|{badgeToAdd}"
+    saveArray(array)
+
+    #make badge unavailable
+    fout = open("badgeList.txt","w")
+    for i in range(len(badgeArray)):
+        if i == badgeToAdd:
+            fout.write("0"+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
+        else:
+            fout.write(badgeArray[i][0]+badgeArray[i][1]+" - "+badgeArray[i][2]+"\n")
+    fout.close()
 
     return message
 
