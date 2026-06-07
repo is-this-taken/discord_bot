@@ -49,7 +49,7 @@ async def update_vc_file():
                     users_in_vc.append(member.id)
 
             # write to file
-            logVC(users_in_vc)
+            lo,cas(users_in_vc)
 
 
             print(f"Logged {len(users_in_vc)} users in VC")

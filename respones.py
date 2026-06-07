@@ -38,7 +38,7 @@ class Person:
          self.VCGroup = int(VCGroup)
          self.profit = int(profit)
          self.daysnogamble = int(daysnogamble)
-         self.net = int(cash) + int(bank0) + int(bank1) + int(bank2) + int(bank3) + int(bank4) + int(bank5) + int(bank6) + int(bank7) + int(bank8) + int(bank9)
+         self.net = int(cash) + int(bank0) + int(bank1) + int(bank2) + int(bank3) + int(bank4) + int(bank5) + int(bank6) + int(bank7) + int(bank8) + int(bank9) + int(bank10)
          self.cases = int(cases)
          self.social = int(social)
 
@@ -119,7 +119,7 @@ def market_view(array):
                     linesRead += 1
                 fin.close()
 
-                message += f"{marketID+1}. k${marketList[marketID].split("-") [2]} for {marketList[marketID].split("-") [0]} {itemName}\n"
+                message += f"{marketID+1}. k${marketList[marketID].split('-') [2]} for {marketList[marketID].split('-') [0]} {itemName}\n"
                 marketID += 1
     return message
 
@@ -221,8 +221,8 @@ def market_buy(array,place,lowered):
     marketBuyList = []
     for i in range(len(array)):
         for j in range(len(array[i].marketPosted.split("|"))):
-            if len(f"{array[i].marketPosted.split("|") [j]}-{i}") >= 6:
-                marketBuyList.append(f"{array[i].marketPosted.split("|") [j]}-{i}")
+            if len(f"{array[i].marketPosted.split('|') [j]}-{i}") >= 6:
+                marketBuyList.append(f"{array[i].marketPosted.split('|') [j]}-{i}")
     
     #check for items
     if marketBuyList == "":
@@ -233,7 +233,7 @@ def market_buy(array,place,lowered):
         return "Sorry, there is not that many items in the market"
     
     if int(marketBuyList[marketIndex].split("-")[2]) == marketPrice:
-        itemCode = f"{marketBuyList[marketIndex].split("-")[0]}-{marketBuyList[marketIndex].split("-")[1]}"
+        itemCode = f"{marketBuyList[marketIndex].split('-')[0]}-{marketBuyList[marketIndex].split('-')[1]}"
         #add item to inventory
         if array[place].caseItems == "":
             array[place].caseItems = itemCode
@@ -257,7 +257,7 @@ def market_buy(array,place,lowered):
                     if newMarket == "":
                         newMarket = array[i].marketPosted.split("|") [j]
                     else:
-                        newMarket += f"|{array[i].marketPosted.split("|") [j]}"
+                        newMarket += f"|{array[i].marketPosted.split('|') [j]}"
 
             array[i].marketPosted = newMarket
             saveArray(array)
@@ -277,7 +277,7 @@ def market_buy(array,place,lowered):
 
         if int(marketBuyList[marketIndex].split("-")[0]) != 1:
             itemName += "s"
-        return f"You have bought {int(marketBuyList[marketIndex].split("-")[0])} {itemName} from {array[int(marketBuyList[marketIndex].split("-")[3])].name} for {marketPrice}"
+        return f"You have bought {int(marketBuyList[marketIndex].split('-')[0])} {itemName} from {array[int(marketBuyList[marketIndex].split('-')[3])].name} for {marketPrice}"
     else:
         return "Sorry, your Purchace order has been cancelled as you did not enter the correct price. Please try again with the correct price."
 
@@ -1307,6 +1307,8 @@ def fuckComputer(num):
         return True
     elif num == 12:
         return True
+    elif num == 13:
+        return True
     else:
         return False
 
@@ -1331,9 +1333,9 @@ def buyShit(message, ID):
         shop[item-1].stock -= 1
         print(item)
         if(item == 12):
-            print(array[place].cases)
             array[place].cases += 1
-            print(array[place].cases)
+        elif(item == 13):
+            array[place].caseCount += 1
         saveArray(array)
         saveShop(shop)
         return f"You have bought {shop[item-1].item}"
@@ -1678,7 +1680,7 @@ def register(message,ID):
     place = getPlace(ID,array)
     if(place!=-1):
         return "you are already registered nerd"
-    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","","","","0","0"))
+    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","100","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","","","","0","0"))
     saveArray(array)
     return "Resitered Sucsessfully"
 
@@ -1694,15 +1696,16 @@ def logVC(people):
     else:
         for i in range(len(people)):
             place = getPlace(people [i],array)
-            array[place].social += 1
-            print(f"found {array[place].name},Num: {array[place].social}/60")
-            if (array[place].social == 60):   
-                array[place].social = 0
-                array[place].cash += array[place].bank5 /100 * amount
-                print(f"paid {array[place].name} {array[place].bank5 /100 * amount}")
-            array[place].VC2 += 1
-            if large:
-                array[place].VCGroup += 1
+            if(place != -1):
+                array[place].social += 1
+                print(f"found {array[place].name},Num: {array[place].social}/60")
+                if (array[place].social == 60):   
+                    array[place].social = 0
+                    array[place].cash += array[place].bank5 /100 * amount
+                    print(f"paid {array[place].name} {array[place].bank5 /100 * amount}")
+                array[place].VC2 += 1
+                if large:
+                    array[place].VCGroup += 1
     saveArray(array)
 
 def wordle(message):
@@ -1807,7 +1810,7 @@ def beef_dip(message,ID):
     saveArray(array)
     return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
 
-def case(message,ID):
+def cases(message,ID):
     array = getArray()
     place = getPlace(ID,array)
     return f"You have {array[place].cases} cases"
@@ -1893,8 +1896,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = coinFlip(lowered,nameID)
     elif lowered.startswith(",quote") and channel in bot_list:
         text = quoteGame(nameID,lowered)
-    elif lowered.startswith(",case") and channel in bot_list:
-        text = case(lowered,nameID)
+    elif lowered.startswith(",cases") and channel in bot_list:
+        text = cases(lowered,nameID)
     elif lowered == ",count":
         text = "Your counter is now at "+str(count(nameID))
     elif lowered.startswith(",leaderboard"):
@@ -2030,7 +2033,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     if(array[place].achivements.find("Forever Alone") == -1 and array[place].VCAlone >= 1440):
         array[place].achivements += "Forever Alone-"
         text += "\n\nAchivement Get: Forever Alone"
-    if(array[place].achivements.find("Beef Dip Tier 1") == -1 and array[place].beefdip >= 1):
+    """if(array[place].achivements.find("Beef Dip Tier 1") == -1 and array[place].beefdip >= 1):
         array[place].achivements += "Beef Dip Tier 1-"
         text += "\n\nAchivement Get: Beef Dip Tier 1"
     if(array[place].achivements.find("Beef Dip Tier 2") == -1 and array[place].beefdip >= 2):
@@ -2044,7 +2047,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text += "\n\nAchivement Get: Beef Dip Tier 4"
     if(array[place].achivements.find("Beef Dip Tier 5") == -1 and array[place].beefdip >= 5):
         array[place].achivements += "Beef Dip Tier 5-"
-        text += "\n\nAchivement Get: Beef Dip Tier 5"
+        text += "\n\nAchivement Get: Beef Dip Tier 5"""
     if(array[place].achivements.find("Ultra Lucky Man") == -1 and randint(1,1000000) == 550):
         array[place].achivements += "Ultra Lucky Man-"
         text += "\n\nAchivement Get: Ultra Lucky Man"

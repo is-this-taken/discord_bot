@@ -1,16 +1,16 @@
-1c - The Head of Exodia
-1c - Right Arm of Exodia
+0c - The Head of Exodia
+0c - Right Arm of Exodia
 1c - Left Arm of Exodia
-1c - Right Leg of Exodia
-1c - Left Leg of Exodia
-1c - Gooner
+0c - Right Leg of Exodia
+0c - Left Leg of Exodia
+0c - Gooner
 1c - Goober
-1c - Chicken Jockey
+0c - Chicken Jockey
 1c - Peter Griffin
-1c - Sneakers O'Tool
-1c - Gnomer
+0c - Sneakers O'Tool
+0c - Gnomer
 1c - Wordler
-1c - IDF Soldier
+0c - IDF Soldier
 1c - Flat Earther
 1c - Parkour Noob
 1c - Jake from State Farm
@@ -25,17 +25,17 @@
 1e - Evan Joshua Moura Joshua Osmar
 1e - Spencer Douglas McDonald
 1e - Ivan Mate Ivan Luksic Milardovic
-1e - Perogie Lover
+0e - Perogie Lover
 1e - Oiled Up
 1e - Mr. Bulk
-1e - reteP
+0e - reteP
 1e - Jesus Christ
 1e - Benjamin Netanyahu
 1e - Parkor Pro
-1e - Faze Clan
+0e - Faze Clan
 1l - Faggot
 1l - Slur
-1l - Parkor Master
+0l - Parkor Master
 1l - CP Lover
 1l - Osnar
 1l - Man whos hands and legs are Penises
