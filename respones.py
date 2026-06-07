@@ -109,7 +109,7 @@ def market_view(array):
                 #item Name
                 itemName = ""
                 fin = open("caseContents.txt","r")
-                linesRead = 0
+                linesRead = -1
                 while True:
                     text = fin.readline().strip()
                     if text == "":
@@ -192,7 +192,7 @@ def market_post(array,place,lowered):
         text = fin.readline().strip()
         if text == "":
             break
-        if itemIndex == linesRead:
+        if itemID[itemIndex] == linesRead:
             itemName = text
         linesRead += 1
     fin.close()
@@ -214,7 +214,8 @@ def market_buy(array,place,lowered):
     marketIndex = int(lowered.split(" ") [2]) - 1
     marketPrice = int(lowered.split(" ") [3])
     
-    if marketPrice > array[place].cash:
+    #check if you have enough
+    if marketPrice > array[place].cash and array[place] != array[int(marketBuyList[marketIndex].split("-")[3])]:
         return  "Sorry, you don't have enough money to buy this item."
 
     #marketBuyList ID is formated Amount-ID-Price-CountToUser
