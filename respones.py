@@ -106,7 +106,7 @@ def market_view(array):
                 #item Name
                 itemName = ""
                 fin = open("caseContents.txt","r")
-                linesRead = 0
+                linesRead = -1
                 while True:
                     text = fin.readline().strip()
                     if text == "":
@@ -189,7 +189,7 @@ def market_post(array,place,lowered):
         text = fin.readline().strip()
         if text == "":
             break
-        if itemIndex == linesRead:
+        if itemID[itemIndex] == linesRead:
             itemName = text
         linesRead += 1
     fin.close()
