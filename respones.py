@@ -211,7 +211,8 @@ def market_buy(array,place,lowered):
     marketIndex = int(lowered.split(" ") [2]) - 1
     marketPrice = int(lowered.split(" ") [3])
     
-    if marketPrice > array[place].cash:
+    #check if you have enough
+    if marketPrice > array[place].cash and array[place] != array[int(marketBuyList[marketIndex].split("-")[3])]:
         return  "Sorry, you don't have enough money to buy this item."
 
     #marketBuyList ID is formated Amount-ID-Price-CountToUser
