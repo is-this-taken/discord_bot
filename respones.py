@@ -78,22 +78,49 @@ def market(ID,lowered):
         return "try [,market help] for more information"
     command = lowered.split(" ") [1]
     if(command == "help"):
-        return "Here are a list of sub-commands\nHelp: Show this\nView: See what's on the market\nPost [Item] [Quantity] [Price]: Add a listing to the market\nBuy: Purchace item from the market\nInfo: How the market works"  
+        return "Here are a list of sub-commands\nHelp: Show this\nView: See what's on the market\nPost [Item] [Quantity] [Price]: Add a listing to the market\nBuy [ItemID] [Price]: Purchace item from the market\nInfo: How the market works"  
     elif(command == "view"):
-        return market_view(ID,array,place)
+        return market_view(array)
     elif(command == "post"):
-        return market_post(ID,array,place,lowered)
+        return market_post(array,place,lowered)
     elif(command == "buy"):
-        return market_buy(ID,array,place)
+        return market_buy(array,place, lowered)
     elif(command == "info"):
         return "Any user can place a item on the market for a price and any user can buy this item for the price listed.\nIf you have posted a listing on accident or would like to remove a listing, just use [,market buy] to buy the item from yourself."
     else:
         return "try [,market help] for more information"
 
-def market_view(ID,array,place):
-    return "Function under construction"
+def market_view(array):
+    message = "[ID] [Price] for [Quantity] [Item Name]\n"
+    marketList = []
 
-def market_post(ID,array,place,lowered):
+    marketID = 0
+    for i in range(len(array)):
+        for j in range(len(array[i].marketPosted.split("|"))):
+            marketList.append(array[i].marketPosted.split("|") [j])
+        
+        if array[i].marketPosted != "":
+            #make message
+            message += f"{array[i].name}'s listings are\n"
+            for j in range(len(array[i].marketPosted.split("|"))):
+                #item Name
+                itemName = ""
+                fin = open("caseContents.txt","r")
+                linesRead = 0
+                while True:
+                    text = fin.readline().strip()
+                    if text == "":
+                        break
+                    if int(marketList[marketID].split("-") [1]) == linesRead:
+                        itemName = text
+                    linesRead += 1
+                fin.close()
+
+                message += f"{marketID+1}. k${marketList[marketID].split("-") [2]} for {marketList[marketID].split("-") [0]} {itemName}\n"
+                marketID += 1
+    return message
+
+def market_post(array,place,lowered):
     message = "Sorry, something went wrong"
 
     #check for items
@@ -140,7 +167,7 @@ def market_post(ID,array,place,lowered):
     #remove item from your inventory
     array[place].caseItems = ""
     for i in range(len(itemsList)):
-        if int(itemID[i])-1 == int(itemIndex):
+        if int(itemID[i]) == int(itemID[itemIndex]):
             if int(itemCount[i]) - itemUseAmount > 0:
                 itemNew = f"{int(itemCount[i]) - itemUseAmount}-{itemID[i]}"
                 if array[place].caseItems == "":
@@ -154,8 +181,6 @@ def market_post(ID,array,place,lowered):
                 array[place].caseItems += f"|{itemsList[i]}"
     saveArray(array)
 
-    orderMarket(array,place)
-
     #get item name
     itemName = ""
     fin = open("caseContents.txt","r")
@@ -167,13 +192,91 @@ def market_post(ID,array,place,lowered):
         if itemIndex == linesRead:
             itemName = text
         linesRead += 1
+    fin.close()
 
     if itemUseAmount == 1:
         return f"You have posted {itemUseAmount} {itemName} for k${itemPrice}"
     return f"You have posted {itemUseAmount} {itemName}s for k${itemPrice}"
 
-def market_buy(ID,array,place):
-    return "Function under construction"
+def market_buy(array,place,lowered):
+    message = "Sorry, something went wrong"
+
+    #check for item index
+    if (lowered.count(" ") == 1):
+        return "Please add an item ID. This is the first number when you use [],market view]"
+    
+    if (lowered.count(" ") == 2):
+        return "Please add the cost of the item"
+    
+    marketIndex = int(lowered.split(" ") [2]) - 1
+    marketPrice = int(lowered.split(" ") [3])
+    
+    if marketPrice > array[place].cash:
+        return  "Sorry, you don't have enough money to buy this item."
+
+    #marketBuyList ID is formated Amount-ID-Price-CountToUser
+    marketBuyList = []
+    for i in range(len(array)):
+        for j in range(len(array[i].marketPosted.split("|"))):
+            if len(f"{array[i].marketPosted.split("|") [j]}-{i}") >= 6:
+                marketBuyList.append(f"{array[i].marketPosted.split("|") [j]}-{i}")
+    
+    #check for items
+    if marketBuyList == "":
+        return "Sorry, there are no items on the market. Please come back later!"
+    
+    #check if itemID exists
+    if marketIndex > len(marketBuyList):
+        return "Sorry, there is not that many items in the market"
+    
+    if int(marketBuyList[marketIndex].split("-")[2]) == marketPrice:
+        itemCode = f"{marketBuyList[marketIndex].split("-")[0]}-{marketBuyList[marketIndex].split("-")[1]}"
+        #add item to inventory
+        if array[place].caseItems == "":
+            array[place].caseItems = itemCode
+        else:
+            array[place].caseItems += f"|{itemCode}"
+
+        #remove price from buyers money
+        array[place].cash -= marketPrice
+        saveArray(array)
+        orderItems(array,place)
+
+        #give money to owner
+        array[int(marketBuyList[marketIndex].split("-")[3])].cash += marketPrice
+
+        checkForThis = array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|") [marketIndex]
+        #remove from market
+        for i in range(len(array)):
+            newMarket = ""
+            for j in range(len(array[i].marketPosted.split("|"))):
+                if array[i].marketPosted.split("|") [j] != checkForThis:
+                    if newMarket == "":
+                        newMarket = array[i].marketPosted.split("|") [j]
+                    else:
+                        newMarket += f"|{array[i].marketPosted.split("|") [j]}"
+
+            array[i].marketPosted = newMarket
+            saveArray(array)
+
+        #get item name
+        itemName = ""
+        fin = open("caseContents.txt","r")
+        linesRead = 0
+        while True:
+            text = fin.readline().strip()
+            if text == "":
+                break
+            if int(marketBuyList[marketIndex].split("-")[1]) == linesRead:
+                itemName = text
+            linesRead += 1
+        fin.close()
+
+        if int(marketBuyList[marketIndex].split("-")[0]) != 1:
+            itemName += "s"
+        return f"You have bought {int(marketBuyList[marketIndex].split("-")[0])} {itemName} from {array[int(marketBuyList[marketIndex].split("-")[3])].name} for {marketPrice}"
+    else:
+        return "Sorry, your Purchace order has been cancelled as you did not enter the correct price. Please try again with the correct price."
 
 """
     Badges code
@@ -391,44 +494,6 @@ def orderItems(array,place):
                 array[place].caseItems = itemCode
             else:
                 array[place].caseItems += f"|{itemCode}"
-            IDcount += 1
-    saveArray(array)
-
-def orderMarket(array,place):
-    itemsList = array[place].marketPosted.split("|")
-    itemCount = []
-    itemID = []
-    for i in range(len(itemsList)):
-        itemCount.append(itemsList[i].split("-") [0])
-        itemID.append(itemsList[i].split("-") [1])
-
-    #get max ID value
-    max = 0
-    for i in range(len(itemID)):
-        if int(itemID[i]) > max:
-            max = int(itemID[i])
-    
-    sortedItemID = []
-    sortedItemID = sorted(itemID)
-    IDcount = 0
-    array[place].marketPosted = ""
-    #search thought all item, adds counts of the same item ID
-    for i in range(1,max+1):
-        countInThisID = 0
-        checkForThis = ""
-        if i < 10:
-            checkForThis += "0"
-        checkForThis += str(i)
-        if checkForThis in itemID:
-            for j in range(len(itemsList)):
-                if i == int(itemID[j]):
-                    countInThisID += int(itemCount[j])
-            
-            itemCode = str(countInThisID) + "-" + checkForThis + "-" + itemsList[IDcount].split("-") [2]
-            if array[place].marketPosted == "":
-                array[place].marketPosted = itemCode
-            else:
-                array[place].marketPosted += f"|{itemCode}"
             IDcount += 1
     saveArray(array)
 
