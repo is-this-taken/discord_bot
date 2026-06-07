@@ -884,8 +884,10 @@ def bank_withdraw(ID,bank,amount,array,place):
         saveArray(array)
         return "Withdrawn sucsessfully"
     if(bank == 4):
-        if(array[place].bank3 < amount*10):
+        if(amount > array[place].bank3):
             return "Not enough funds"
+        if(array[place].bank3 < amount*10) and (array[place].bank3 >= 10):
+            return "Don't gamble"
         array[place].bank3 -= amount
         array[place].cash += amount
         saveArray(array)
@@ -940,9 +942,6 @@ def bank_withdraw(ID,bank,amount,array,place):
         saveArray(array)
         return "Withdrawn sucsessfully"
     
-
-
-
 """Show bak money"""
 def bank(ID,lowered):
 
@@ -959,21 +958,19 @@ def bank(ID,lowered):
         return "try [,bank help] for more information"
     command = lowered.split(" ") [1]
     if(command == "help"):
-        return "Here are a list of sub-commands\nHelp: show this\nDeposit [ID] [Amount]: Deposits money\nWithdraw [ID] [Amount]: Withdraws money\nList: Shows Bank list\nInfo [ID]: Shows Bank information"  
+        return "Here are a list of sub-commands\nHelp: show this\nDeposit [ID] [Amount]: Deposits money\nWithdraw [ID] [Amount]: Withdraws money\nList: Shows Bank list\nInfo [ID]: Shows Bank information\nAmount: Show all your bank values.\nStats: show other stats regarding the bank"  
     elif(command == "deposit"):
         if (lowered.count(" ") == 1):
             return "Please add a bank ID"
         if (lowered.count(" ") == 2):
             return "Please add an amount to deposit"
-        return bank_deposit(ID,lowered.split(" ") [2],lowered.split(" ") [3],array,place)
+        return bank_deposit(ID,int(lowered.split(" ") [2]),int(lowered.split(" ") [3]),array,place)
     elif(command == "withdraw"):
         if (lowered.count(" ") == 1):
             return "Please add a bank ID"
         if (lowered.count(" ") == 2):
             return "Please add an amount to withdraw"
-    elif(command == "amount"):
-        if (lowered.count(" ") == 1):
-            return "Please add a bank ID"
+        return bank_withdraw(ID,int(lowered.split(" ") [2]),int(lowered.split(" ") [3]),array,place)
     elif(command == "list"):
         return "Here are the list of banks:\n1. Wordle Bank\n2. Wordle Shitter Bank\n3. Gambling bank\n4. Addict Bank\n5. Safe Bank\n6. Social Bank\n7. Achivement Bnk\n8. Cool Kid Bank\n9. Sleepy Bank\n10. Beef Dip Bank\n11. Case Bank"
     elif(command == "info"):
@@ -1004,6 +1001,24 @@ def leaderboard_bank():
         for j in range(len(array)):
             if int(array[j].bank0) > top:
                 top = int(array[j].bank0)
+                by = array[j].name
+                spot=j
+        text += f"{str(i+1)}. ${str(top)} by {by}\n"
+        array.pop(spot)
+    return text
+
+"""Shows the leaderboard of money"""
+def leaderboard_net():
+    array = getArray()
+    text = ""
+    length = len(array) 
+    for i in range(length):
+        top = -1
+        by = ""
+        spot = -1
+        for j in range(len(array)):
+            if int(array[j].net) > top:
+                top = int(array[j].net)
                 by = array[j].name
                 spot=j
         text += f"{str(i+1)}. ${str(top)} by {by}\n"
@@ -1255,7 +1270,7 @@ def getMoney(ID):
         elif(ID == 719250188228886620):
             return f"Here is your ${moneygain} of gambling money you slut"
         elif(ID == 552600422016090133):
-            return f"Here is your ${moneygain} for Papa K you slave"
+            return f"Here is your ${moneygain} you dirty Spigru"
         else:
             return f"You got the Bonus ${moneygain} and now have ${array[place].cash}"
 
@@ -1283,6 +1298,8 @@ def fuckComputer(num):
         return True
     elif num == 11:
         return True
+    elif num == 12:
+        return True
     else:
         return False
 
@@ -1305,6 +1322,11 @@ def buyShit(message, ID):
     if(checkOut):
         array[place].cash -= shop[item-1].price
         shop[item-1].stock -= 1
+        print(item)
+        if(item == 12):
+            print(array[place].cases)
+            array[place].cases += 1
+            print(array[place].cases)
         saveArray(array)
         saveShop(shop)
         return f"You have bought {shop[item-1].item}"
@@ -1655,23 +1677,23 @@ def register(message,ID):
 
 def logVC(people):
     amount = len(people)
-    array = getArray
+    array = getArray()
     large = (amount >= 8)
 
     if(len(people) == 1):
         place = getPlace(people [0],array)
-        array[place].money += array[place].bank8 /100000
+        array[place].cash += array[place].bank8 /100000
         array[place].VCAlone += 1
     else:
         for i in range(len(people)):
             place = getPlace(people [i],array)
-            array[place].money += array[place].bank5 /10000 * amount
+            if (randint(1,60) == 7):   
+                array[place].cash += array[place].bank5 /100 * amount
+                print(f"paid {array[place].name} {array[place].bank5 /100 * amount}")
             array[place].VC2 += 1
             if large:
                 array[place].VCGroup += 1
     saveArray(array)
-
-    
 
 def wordle(message):
     array = getArray()
@@ -1699,7 +1721,7 @@ def wordle(message):
             susadd = -3 
         if(lines[i+1] [0]== "6"):
             moneyGain = 0
-            shitterGain = 0.005
+            shitterGain = 0.01
             susadd = -5
         if(lines[i+1] [0]== "X"):
             moneyGain = -0.05
@@ -1719,6 +1741,7 @@ def wordle(message):
         coolkid = 0
         #general interest for everyone
         for i in range(len(array)):
+            array[i].daysnogamble += 1
             if (array[i].bank7 > 0): coolkid += 1
         if(coolkid == 0):
             coolkid = 1
@@ -1755,23 +1778,32 @@ def achivements(message,ID):
     if(array[place].achivements.count("-") == 0):
         return "you have no achivements"
     else:
-        string = "You have "+str({array[place].achivements.count("-")})+" achivements, they are:\n"
+        string = "You have "+str(array[place].achivements.count("-"))+" achivements, they are:\n"
         for i in range(array[place].achivements.count("-")):
             string += array[place].achivements.split("-")[i]
             string += "\n"
 
         return string
+    
 def beef_dip(message,ID):
-    array=getArray
+    array=getArray()
     place = getPlace(ID,array)
     if (array[place].beefdip != 5):
         return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
     for i in range(message.count("@")):
-        tempid = message.split("@")[i+1].split(">")[0]
+        tempid = int(message.split("@")[i+1].split(">")[0])
         tempplace = getPlace(tempid,array)
-        array[tempplace].money += array[tempplace].bank9 *array[tempplace].beefdip / 100
+        array[tempplace].cash += array[tempplace].bank9 *array[tempplace].beefdip / 100
     saveArray(array)
     return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
+
+def case(message,ID):
+    array = getArray()
+    place = getPlace(ID,array)
+    print(place)
+    print(array[place].cases)
+    return f"You have {array[place].cases} cases"
+
 
 #Response based on message sent
 def get_response(user_input: str,username, nameID, channel) -> str:
@@ -1853,6 +1885,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = coinFlip(lowered,nameID)
     elif lowered.startswith(",quote") and channel in bot_list:
         text = quoteGame(nameID,lowered)
+    elif lowered.startswith(",case") and channel in bot_list:
+        text = case(lowered,nameID)
     elif lowered == ",count":
         text = "Your counter is now at "+str(count(nameID))
     elif lowered.startswith(",leaderboard"):
@@ -1864,8 +1898,10 @@ def get_response(user_input: str,username, nameID, channel) -> str:
             text = leaderboard_beer()
         elif lowered == ",leaderboard bank":
             text = leaderboard_bank()
+        elif lowered == ",leaderboard net":
+            text = leaderboard_net()
         else:
-            text = "leaderboards: count, money, beer, bank"
+            text = "leaderboards: count, money, beer, bank, net"
     elif ((lowered.find("what") != -1) & (len(lowered)>10) & (lowered.count(" ") > 4)) or(randint(1,1000) == 120):
         text = choice(["Ah shit, here we go again ...",
                       "Let's go, open up, it's time for parkour",
@@ -1929,10 +1965,10 @@ def get_response(user_input: str,username, nameID, channel) -> str:
                       "When Village Done?",
                       "No changes were made"
                       ])
-    elif lowered == ",cash in":
-        if(array[place].count >= 1000):
-            text = f"You have cashed in and gained ${cashIn(nameID)}"
-        else: text = "Sorry buddy, but you need at least 1000 points to cash in. Bulk only"
+    #elif lowered == ",cash in":
+        #if(array[place].count >= 1000):
+            #text = f"You have cashed in and gained ${cashIn(nameID)}"
+        #else: text = "Sorry buddy, but you need at least 1000 points to cash in. Bulk only"
     elif lowered.startswith(",changename") and channel in bot_list:
         if(lowered.find(",") > 1):
             text = "Invalid name, no commas allowed"

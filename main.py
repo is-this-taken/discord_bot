@@ -41,12 +41,12 @@ async def update_vc_file():
     await client.wait_until_ready()
     while not client.is_closed():
         for guild in client.guilds:
-            users_in_vc = set()
+            users_in_vc = []
 
             # collect users in voice channels
             for channel in guild.voice_channels:
                 for member in channel.members:
-                    users_in_vc.add(member.id)
+                    users_in_vc.append(member.id)
 
             # write to file
             logVC(users_in_vc)
