@@ -32,7 +32,7 @@ class Person:
          self.bank8 = int(bank8)
          self.bank9 = int(bank9)
          self.bank10 = int(bank10)
-         self.beefdip = str(beefdip)
+         self.beefdip = int(beefdip)
          self.VC2 = int(VC2)
          self.VCAlone = int(VCAlone)
          self.VCGroup = int(VCGroup)
@@ -51,7 +51,7 @@ class Person:
          self.marketPosted = str(marketPosted)
     def tostr (self):
         #only used to write to file
-        return f"{self.id},{self.mode},{self.count},{self.name},{self.bet},{self.cash},{self.slot1},{self.slot2},{self.slot3},{self.beer},{self.sus},{self.achivements},{self.wordle},{self.bank0},{self.bank1},{self.bank2},{self.bank3},{self.bank4},{self.bank5},{self.bank6},{self.bank7},{self.bank8},{self.bank9},{self.bank10},{self.beefdip},{self.profit},{self.VC2},{self.VCAlone},{self.VCGroup},{self.daysnogamble},{self.withdrawTokens},{self.caseCount},{self.caseBuyCredits},{self.caseItems},{self.badges},{self.marketPosted},{self.cases},{self.social}"
+        return f"{int(self.id)},{int(self.mode)},{int(self.count)},{int(self.name)},{int(self.bet)},{int(self.cash)},{int(self.slot1)},{int(self.slot2)},{int(self.slot3)},{int(self.beer)},{int(self.sus)},{str(self.achivements)},{int(self.wordle)},{int(self.bank0)},{int(self.bank1)},{int(self.bank2)},{int(self.bank3)},{int(self.bank4)},{int(self.bank5)},{int(self.bank6)},{int(self.bank7)},{int(self.bank8)},{int(self.bank9)},{int(self.bank10)},{int(self.beefdip)},{int(self.VC2)},{int(self.VCAlone)},{int(self.VCGroup)},{int(self.profit)},{int(self.daysnogamble)},{int(self.withdrawTokens)},{int(self.caseCount)},{int(self.caseBuyCredits)},{str(self.caseItems)},{str(self.badges)},{str(self.marketPosted)},{int(self.cases)},{int(self.social)}"
     
 #The class per shop item
 class Shop:
