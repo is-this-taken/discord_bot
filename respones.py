@@ -400,11 +400,11 @@ def case(ID,lowered):
         return "try [,case help] for more information"
     command = lowered.split(" ") [1]
     if(command == "help"):
-        return "Here are a list of sub-commands\nHelp: Show this\nAmount: List amount of cases owned\nOpen: Open a case\nBuyCredits: See how many cases you can buy\nItems: List all items owned\nUse [itemNumber] [Optional - add amount to use]: Use an item\nInfo: List all case drops and their chances"  
+        return "Here are a list of sub-commands\nHelp: Show this\nAmount: List amount of cases and keys owned\nOpen: Open a case\nBuyCredits: See how many cases you can buy\nItems: List all items owned\nUse [itemNumber] [Optional - add amount to use]: Use an item\nInfo: List all case drops and their chances"  
     elif(command == "amount"):
         if (array[place].caseCount == 1):
-            return f"You have {array[place].caseCount} case."
-        return f"You have {array[place].caseCount} cases."
+            return f"You have {array[place].caseCount} case and you have {array[place].caseBuyCredits} key(s)."
+        return f"You have {array[place].caseCount} cases and you have {array[place].caseBuyCredits} key(s)."
     elif(command == "open"):
         return case_open(ID,array,place)
     elif(command == "buycredits"):
