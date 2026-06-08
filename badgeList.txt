@@ -11,7 +11,7 @@
 1c - Gnomer
 1c - Wordler
 1c - IDF Soldier
-1c - Flat Earther
+0c - Flat Earther
 1c - Parkour Noob
 1c - Jake from State Farm
 1c - Alison Burgers
@@ -22,7 +22,7 @@
 1e - Javan Quin Hill
 1e - Kaelan Joshua VanVliet
 1e - Joshua Brandon Monteith
-1e - Evan Joshua Moura Joshua Osmar
+0e - Evan Joshua Moura Joshua Osmar
 1e - Spencer Douglas McDonald
 1e - Ivan Mate Ivan Luksic Milardovic
 1e - Perogie Lover
@@ -33,12 +33,12 @@
 1e - Benjamin Netanyahu
 1e - Parkor Pro
 1e - Faze Clan
-0l - Faggot
-0l - Retard
-0l - Slur
-0l - Parkor Master
-0l - CP Lover
-0l - <:osnar:1474611911113965700>
-0l - Man whos hands and legs are Penises
+1l - Faggot
+1l - Retard
+1l - Slur
+1l - Parkor Master
+1l - CP Lover
+1l - <:osnar:1474611911113965700>
+1l - Man whos hands and legs are Penises
 1s - Exodia, The Forbidden one
 1s - Parkour Champion

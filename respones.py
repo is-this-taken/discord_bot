@@ -145,6 +145,8 @@ def market_post(array,place,lowered):
     itemIndex = int(lowered.split(" ") [2]) - 1
     itemUseAmount = int(lowered.split(" ") [3])
     itemPrice = int(lowered.split(" ") [4])
+    if(itemPrice < 0):
+        return "God dammit Mark"
     itemsList = array[place].caseItems.split("|")
     if itemIndex < 0 or itemIndex >= len(itemsList):
         return "Sorry, you don't have an item for that item number"
@@ -204,36 +206,50 @@ def market_post(array,place,lowered):
 
 def market_buy(array,place,lowered):
     message = "Sorry, something went wrong"
-
+    print("1")
     #check for item index
     if (lowered.count(" ") == 1):
         return "Please add an item ID. This is the first number when you use [],market view]"
     
     if (lowered.count(" ") == 2):
         return "Please add the cost of the item"
-    
+    print("2")
     marketIndex = int(lowered.split(" ") [2]) - 1
     marketPrice = int(lowered.split(" ") [3])
-    
-    #check if you have enough
-    if marketPrice > array[place].cash and array[place] != array[int(marketBuyList[marketIndex].split("-")[3])]:
-        return  "Sorry, you don't have enough money to buy this item."
-
+    print("3")
     #marketBuyList ID is formated Amount-ID-Price-CountToUser
     marketBuyList = []
+    subtractThis = 0
+    addedThisManyBeforeThisGuy = 0
+    javansBadAtCoding = 0
     for i in range(len(array)):
+        addedThisMany = 0
         for j in range(len(array[i].marketPosted.split("|"))):
             if len(f"{array[i].marketPosted.split('|') [j]}-{i}") >= 6:
                 marketBuyList.append(f"{array[i].marketPosted.split('|') [j]}-{i}")
-    
+                if javansBadAtCoding == marketIndex:
+                    subtractThis += addedThisManyBeforeThisGuy
+                addedThisMany += 1
+                javansBadAtCoding += 1
+        addedThisManyBeforeThisGuy += addedThisMany
+        print(addedThisMany)
+        print(javansBadAtCoding)
+        print(addedThisManyBeforeThisGuy)
+        print(subtractThis)
+        print()
+    print("5")
+    #check if you have enough
+    if marketPrice > array[place].cash and array[place] != array[int(marketBuyList[marketIndex].split("-")[3])]:
+        return  "Sorry, you don't have enough money to buy this item."
+    print("6")
     #check for items
     if marketBuyList == "":
         return "Sorry, there are no items on the market. Please come back later!"
-    
+    print("8")
     #check if itemID exists
     if marketIndex > len(marketBuyList):
         return "Sorry, there is not that many items in the market"
-    
+    print("9")
     if int(marketBuyList[marketIndex].split("-")[2]) == marketPrice:
         itemCode = f"{marketBuyList[marketIndex].split('-')[0]}-{marketBuyList[marketIndex].split('-')[1]}"
         #add item to inventory
@@ -241,21 +257,34 @@ def market_buy(array,place,lowered):
             array[place].caseItems = itemCode
         else:
             array[place].caseItems += f"|{itemCode}"
-
+        print("a")
         #remove price from buyers money
         array[place].cash -= marketPrice
         saveArray(array)
         orderItems(array,place)
-
+        print("b")
         #give money to owner
         array[int(marketBuyList[marketIndex].split("-")[3])].cash += marketPrice
-
-        checkForThis = array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|") [marketIndex]
+        print("c")
+        print(marketIndex)
+        print(marketBuyList)
+        print(array[int(marketBuyList[marketIndex].split("-")[3])])
+        print(array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted)
+        print(array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|"))
+        print(array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|"))
+        print(subtractThis)
+        print(marketIndex - subtractThis)
+        checkForThis = array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|") [marketIndex - subtractThis]
         #remove from market
+        print("d")
         for i in range(len(array)):
             newMarket = ""
             for j in range(len(array[i].marketPosted.split("|"))):
-                if array[i].marketPosted.split("|") [j] != checkForThis:
+                print(array[i].marketPosted.split("|") [j] != checkForThis)
+                print(array[i].marketPosted.split("|") [j])
+                print(checkForThis)
+                if array[i].marketPosted.split("|") [j] != checkForThis or (marketIndex != (i*len(array[i].marketPosted.split("|"))+j)):
+                    print("I am false")
                     if newMarket == "":
                         newMarket = array[i].marketPosted.split("|") [j]
                     else:
@@ -263,26 +292,28 @@ def market_buy(array,place,lowered):
 
             array[i].marketPosted = newMarket
             saveArray(array)
-
+            print("Saved!")
+        print("e")
         #get item name
         itemName = ""
         fin = open("caseContents.txt","r")
         linesRead = 0
+        print("f")
         while True:
+            linesRead += 1
             text = fin.readline().strip()
             if text == "":
                 break
             if int(marketBuyList[marketIndex].split("-")[1]) == linesRead:
                 itemName = text
-            linesRead += 1
         fin.close()
+        print("gun")
 
         if int(marketBuyList[marketIndex].split("-")[0]) != 1:
             itemName += "s"
         return f"You have bought {int(marketBuyList[marketIndex].split('-')[0])} {itemName} from {array[int(marketBuyList[marketIndex].split('-')[3])].name} for {marketPrice}"
     else:
         return "Sorry, your Purchace order has been cancelled as you did not enter the correct price. Please try again with the correct price."
-
 """
     Badges code
     Author: Javan
@@ -568,19 +599,19 @@ def case_use(ID,array,place,lowered):
         message = f"You have applied {itemUseAmount} Withdraw Token(s) to your account"
 
     elif itemID == "02":
-        array[place].cash += int(0.1*array[place].bank10*itemUseAmount)
+        array[place].cash += int(0.001*array[place].bank10*itemUseAmount)
         saveArray(array)
-        message = f"You have applied {itemUseAmount} 0.1% Intrest Token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
+        message = f"You have applied {itemUseAmount} 0.1% Intrest Token(s) to your account\nYou have gained ${int(0.001*array[place].bank10*itemUseAmount)}"
 
     elif itemID == "03":
-        array[place].cash += int(0.5*array[place].bank10*itemUseAmount)
+        array[place].cash += int(0.005*array[place].bank10*itemUseAmount)
         saveArray(array)
-        message = f"You have applied {itemUseAmount} 0.5% Intrest Token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
+        message = f"You have applied {itemUseAmount} 0.5% Intrest Token(s) to your account\nYou have gained ${int(0.005*array[place].bank10*itemUseAmount)}"
 
     elif itemID == "04":
-        array[place].cash += int(array[place].bank10*itemUseAmount)
+        array[place].cash += int(0.01*array[place].bank10*itemUseAmount)
         saveArray(array)
-        message = f"You have applied {itemUseAmount} 1.0% Intrest Token(s) to your account\nYou have gained ${int(0.1*array[place].bank10*itemUseAmount)}"
+        message = f"You have applied {itemUseAmount} 1.0% Intrest Token(s) to your account\nYou have gained ${int(0.01*array[place].bank10*itemUseAmount)}"
 
     elif itemID == "05":
         totalStolen = 0
@@ -934,7 +965,7 @@ def bank_withdraw(ID,bank,amount,array,place):
         return "Withdrawn sucsessfully"
     if(bank == 10):
         if(array[place].bank9 < amount):
-            return "Not enoug9h funds"
+            return "Not enough funds"
         array[place].bank9 -= amount
         array[place].cash += amount
         saveArray(array)
@@ -975,6 +1006,9 @@ def bank(ID,lowered):
             return "Please add a bank ID"
         if (lowered.count(" ") == 2):
             return "Please add an amount to withdraw"
+        if(array[place].withdrawTokens == 0):
+            return "You got no withdraw tokesn nerd"
+        array[place].withdrawTokens -= 1
         return bank_withdraw(ID,int(lowered.split(" ") [2]),int(lowered.split(" ") [3]),array,place)
     elif(command == "list"):
         return "Here are the list of banks:\n1. Wordle Bank\n2. Wordle Shitter Bank\n3. Gambling bank\n4. Addict Bank\n5. Safe Bank\n6. Social Bank\n7. Achivement Bnk\n8. Cool Kid Bank\n9. Sleepy Bank\n10. Beef Dip Bank\n11. Case Bank"
@@ -985,9 +1019,9 @@ def bank(ID,lowered):
             #Add Bank info here
             return ["Wordle Bank: Get interest amounts based on how good you do in the wordle\nInterest amounts:\nWin: 2.5%\n2: 2%\n3: 1%\n4: 0.5%\n5: 0.25%\n6: 0%\nLose: -5%","Wordle Shitter Bank: Get money based on how bad you do in the wordle but don't fail\nInterest amounts:\nWin: 0.2%\n2: 0.1%\n3: 0%\n4: 0.5%\n5: 0.5%\n6: 1%\nLose: -10%","Gambling Bank: Whenever you deposit money into this bank, there is a 10% chance it gets gambled away. But if you lose a coinflip, there is a 5% chance you can get up to X dollars back where X is the amount invested or the amount gambled (whichever is lower)","Addict Banks: Get 0.X% interest every day where X is the amount of days you go without gambling (Max 30 days)\n\nAbility: [$10 invested] You can only withdraw up to 10% of your money at a time","Safe Bank: Gain a flat, 1% interest every day.\n\nAbility:\n[$1000 inveested] Get an extra $5 when you get the hourly money","Social Bank: Every hour you are in a voice call, you get X% interest where X is the amount of people in that voice call","Achievement bank: Every day, you get 0.X% interest where X is the amount of achivements you have","Cool Kid Bank: A large 10% interest is payed out to each person invested in the bank, but the interest is divided by the amount of people invested in the cool kid bank","Sleepy Bank: Gain interest for time spent in a voice call by yourself","Beef Dip Bank: Whenever you beef dip with a tier 5 beef dipper, You will gain X% interest where X is your beef dip tier.\nDoing better a beef dipping will up your beef dip tier","Case Bank: Get interest using Interest Tokens, but your money can be stolen with Robery Tokens"][int(lowered.split(" ")[2]) - 1]
     elif(command == "amount" or command == "amounts"):
-        return f"Wordle: {array[place].bank0}\nWordle Shitter: {array[place].bank1}\nGambling: {array[place].bank2}\nAddict: {array[place].bank3}\nSafe: {array[place].bank4}\nSocial: {array[place].bank5}\nAchivement: {array[place].bank6}\nCool Kid: {array[place].bank7}\nSleepy: {array[place].bank8}\nBeef Dip: {array[place].bank9}"
+        return f"Wordle: {array[place].bank0}\nWordle Shitter: {array[place].bank1}\nGambling: {array[place].bank2}\nAddict: {array[place].bank3}\nSafe: {array[place].bank4}\nSocial: {array[place].bank5}\nAchivement: {array[place].bank6}\nCool Kid: {array[place].bank7}\nSleepy: {array[place].bank8}\nBeef Dip: {array[place].bank9}\nCase: {array[place].bank10}"
     elif(command == "stats"):
-        return f"Days without gambling: {array[place].daysnogamble}"
+        return f"Days without gambling: {array[place].daysnogamble}\nWithdraw tokens: {array[place].withdrawTokens}"
     else:
         return "try [,bank help] for more information"
     
@@ -1335,10 +1369,10 @@ def buyShit(message, ID):
         if(item == 12):
             array[place].cases += 1
         elif(item == 13):
-            if(array[place].caseBuyCredit == 0):
+            if(array[place].caseBuyCredits == 0):
                 return "You have no case keys moron"
             array[place].caseCount += 1
-            array[place].caseBuyCredit -= 1
+            array[place].caseBuyCredits -= 1
         array[place].cash -= shop[item-1].price
         shop[item-1].stock -= 1
         print(item)
@@ -1687,7 +1721,7 @@ def register(message,ID):
     place = getPlace(ID,array)
     if(place!=-1):
         return "you are already registered nerd"
-    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","100","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","","","","0","0"))
+    array.append(Person(str(ID),"0","0",message.split(" ") [1],"0","0","0","0","0","0","0","","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","1","1","","","","0","0"))
     saveArray(array)
     return "Resitered Sucsessfully"
 
