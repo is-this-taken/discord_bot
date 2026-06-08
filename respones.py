@@ -1816,6 +1816,7 @@ def wordle(message):
                 if(place != -1):
                     array[place].cash += int(moneyGain*float(array[place].bank0))
                     array[place].cash += int(shitterGain*float(array[place].bank1))
+                    array[place].cash += 10
                     array[place].profit += int(moneyGain*float(array[place].bank0))
                     array[place].profit += int(shitterGain*float(array[place].bank1))
                     array[place].sus += susadd
