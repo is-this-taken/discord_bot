@@ -65,6 +65,60 @@ class Shop:
     def tostr (self):
         return f"{self.price},{self.item},{self.stock}"
 
+"""Give your badge to another player"""
+def giveBadge(ID,target,lowered):
+    array = getArray()
+    place = getPlace(ID, array)
+    targetPlace = getPlaceFromName(target)
+
+    if (targetPlace == -1):
+        return "Not a valid name"
+    
+    #allows badges with spaces
+    badge = lowered[(12+len(target)):]
+    
+    yourBadges = array[place].badges.split("|")
+
+    #find badge location
+    fin = open("badgeList.txt","r")
+    badgeID = 0
+    while True:
+        line = fin.readline().strip()
+        if line == "":
+            return "You spelt your own badge wrong, idiot"
+        if line.lower() [5:] == badge:
+            break
+        badgeID += 1
+    fin.close()
+
+    #find if you own this badge
+    if not (str(badgeID) in yourBadges):
+        return "WHAT? You don't even own this badge??"
+
+    #remove your badge
+    yourNewBadges = []
+    for i in range(len(yourBadges)):
+        if badgeID != int(yourBadges[i]):
+            yourNewBadges.append(yourBadges[i])
+
+    array[place].badges = ""
+    for i in range(len(yourNewBadges)):
+        if array[place].badges == "":
+            array[place].badges = str(yourNewBadges[i])
+        else:
+            array[place].badges += f"|{yourNewBadges[i]}"
+    saveArray(array)
+
+    #give other person your badge
+    if array[targetPlace].badges == "":
+        array[targetPlace].badges = str(badgeID)
+    else:
+        array[targetPlace].badges += f"|{badgeID}"
+    saveArray(array)
+
+    updateBadges(array)
+
+    return f"You have given {badge} to {array[targetPlace].name}!"
 
 """
     Market code
@@ -213,10 +267,10 @@ def market_buy(array,place,lowered):
     
     if (lowered.count(" ") == 2):
         return "Please add the cost of the item"
-    print("2")
+
     marketIndex = int(lowered.split(" ") [2]) - 1
     marketPrice = int(lowered.split(" ") [3])
-    print("3")
+
     #marketBuyList ID is formated Amount-ID-Price-CountToUser
     marketBuyList = []
     subtractThis = 0
@@ -232,24 +286,19 @@ def market_buy(array,place,lowered):
                 addedThisMany += 1
                 javansBadAtCoding += 1
         addedThisManyBeforeThisGuy += addedThisMany
-        print(addedThisMany)
-        print(javansBadAtCoding)
-        print(addedThisManyBeforeThisGuy)
-        print(subtractThis)
-        print()
-    print("5")
+
     #check if you have enough
     if marketPrice > array[place].cash and array[place] != array[int(marketBuyList[marketIndex].split("-")[3])]:
         return  "Sorry, you don't have enough money to buy this item."
-    print("6")
+
     #check for items
     if marketBuyList == "":
         return "Sorry, there are no items on the market. Please come back later!"
-    print("8")
+
     #check if itemID exists
     if marketIndex > len(marketBuyList):
         return "Sorry, there is not that many items in the market"
-    print("9")
+
     if int(marketBuyList[marketIndex].split("-")[2]) == marketPrice:
         itemCode = f"{marketBuyList[marketIndex].split('-')[0]}-{marketBuyList[marketIndex].split('-')[1]}"
         #add item to inventory
@@ -265,26 +314,14 @@ def market_buy(array,place,lowered):
         print("b")
         #give money to owner
         array[int(marketBuyList[marketIndex].split("-")[3])].cash += marketPrice
-        print("c")
-        print(marketIndex)
-        print(marketBuyList)
-        print(array[int(marketBuyList[marketIndex].split("-")[3])])
-        print(array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted)
-        print(array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|"))
-        print(array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|"))
-        print(subtractThis)
-        print(marketIndex - subtractThis)
+ 
         checkForThis = array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|") [marketIndex - subtractThis]
         #remove from market
         print("d")
         for i in range(len(array)):
             newMarket = ""
             for j in range(len(array[i].marketPosted.split("|"))):
-                print(array[i].marketPosted.split("|") [j] != checkForThis)
-                print(array[i].marketPosted.split("|") [j])
-                print(checkForThis)
                 if array[i].marketPosted.split("|") [j] != checkForThis or (marketIndex != (i*len(array[i].marketPosted.split("|"))+j)):
-                    print("I am false")
                     if newMarket == "":
                         newMarket = array[i].marketPosted.split("|") [j]
                     else:
@@ -298,7 +335,7 @@ def market_buy(array,place,lowered):
         itemName = ""
         fin = open("caseContents.txt","r")
         linesRead = 0
-        print("f")
+
         while True:
             linesRead += 1
             text = fin.readline().strip()
@@ -1870,6 +1907,7 @@ def beef_dip(message,ID):
     saveArray(array)
     return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
 
+"""CHANGE TO cs2_cases"""
 def cases(message,ID):
     array = getArray()
     place = getPlace(ID,array)
@@ -1938,6 +1976,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = "<@"+str(nameID)+">"
     
     #commands
+    elif lowered.startswith(",givebadge"):
+        text = giveBadge(nameID,lowered.split(" ") [1],lowered)
     elif lowered.startswith(",market"):
         text = market(nameID,lowered)
     elif lowered == ",badge" or lowered == ",badges":
