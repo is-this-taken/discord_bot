@@ -1314,6 +1314,8 @@ def getMoney(ID):
             return f"Here is your ${moneygain} of gambling money you slut"
         elif(ID == 552600422016090133):
             return f"Here is your ${moneygain} you dirty Spigru"
+        elif(ID == 739948707440754790):
+            return f"Have your ${moneygain}, you insomniac Riga"
         else:
             return f"You got the Bonus ${moneygain} and now have ${array[place].cash}"
 
