@@ -51,7 +51,10 @@ class Person:
          self.marketPosted = str(marketPosted)
     def tostr (self):
         #only used to write to file
-        return f"{int(self.id)},{int(self.mode)},{int(self.count)},{int(self.name)},{int(self.bet)},{int(self.cash)},{int(self.slot1)},{int(self.slot2)},{int(self.slot3)},{int(self.beer)},{int(self.sus)},{str(self.achivements)},{int(self.wordle)},{int(self.bank0)},{int(self.bank1)},{int(self.bank2)},{int(self.bank3)},{int(self.bank4)},{int(self.bank5)},{int(self.bank6)},{int(self.bank7)},{int(self.bank8)},{int(self.bank9)},{int(self.bank10)},{int(self.beefdip)},{int(self.VC2)},{int(self.VCAlone)},{int(self.VCGroup)},{int(self.profit)},{int(self.daysnogamble)},{int(self.withdrawTokens)},{int(self.caseCount)},{int(self.caseBuyCredits)},{str(self.caseItems)},{str(self.badges)},{str(self.marketPosted)},{int(self.cases)},{int(self.social)}"
+        return f"{int(self.id)},{int(self.mode)},{int(self.count)},{str(self.name)},{int(self.bet)},{int(self.cash)},{int(self.slot1)},{int(self.slot2)},{int(self.slot3)},{int(self.beer)},{int(self.sus)},{str(self.achivements)},{int(self.wordle)},{int(self.bank0)},{int(self.bank1)},{int(self.bank2)},{int(self.bank3)},{int(self.bank4)},{int(self.bank5)},{int(self.bank6)},{int(self.bank7)},{int(self.bank8)},{int(self.bank9)},{int(self.bank10)},{int(self.beefdip)},{int(self.VC2)},{int(self.VCAlone)},{int(self.VCGroup)},{int(self.profit)},{int(self.daysnogamble)},{int(self.withdrawTokens)},{int(self.caseCount)},{int(self.caseBuyCredits)},{str(self.caseItems)},{str(self.badges)},{str(self.marketPosted)},{int(self.cases)},{int(self.social)}"
+    def debug (self):
+        #only used to write to file
+        return f"ID:{int(self.id)},Mode:{int(self.mode)},Count:{int(self.count)},Name:{str(self.name)},Bet:{int(self.bet)},cash:{int(self.cash)},slot1:{int(self.slot1)},slot2:{int(self.slot2)},slot3:{int(self.slot3)},beer:{int(self.beer)},sus:{int(self.sus)},achivevements:{str(self.achivements)},wordle:{int(self.wordle)},bank0:{int(self.bank0)},bank1{int(self.bank1)},bank2{int(self.bank2)},bank3{int(self.bank3)},bank4{int(self.bank4)},bank5{int(self.bank5)},bank6{int(self.bank6)},bank7{int(self.bank7)},bank8{int(self.bank8)},bank9{int(self.bank9)},bank10{int(self.bank10)},beefdip{int(self.beefdip)},VC2{int(self.VC2)},VCAlone{int(self.VCAlone)},VCGroup{int(self.VCGroup)},profit{int(self.profit)},daysnogamble{int(self.daysnogamble)},withdrawtoken{int(self.withdrawTokens)},caseCount{int(self.caseCount)},caseBuyCredit{int(self.caseBuyCredits)},CaseItems{str(self.caseItems)},Badges{str(self.badges)},Marketposted{str(self.marketPosted)},cases{int(self.cases)},social{int(self.social)}"
     
 #The class per shop item
 class Shop:
@@ -109,14 +112,14 @@ def market_view(array):
                 #item Name
                 itemName = ""
                 fin = open("caseContents.txt","r")
-                linesRead = -1
+                linesRead = 0
                 while True:
+                    linesRead += 1
                     text = fin.readline().strip()
                     if text == "":
                         break
                     if int(marketList[marketID].split("-") [1]) == linesRead:
                         itemName = text
-                    linesRead += 1
                 fin.close()
 
                 message += f"{marketID+1}. k${marketList[marketID].split('-') [2]} for {marketList[marketID].split('-') [0]} {itemName}\n"
@@ -1688,13 +1691,16 @@ def register(message,ID):
 def logVC(people):
     amount = len(people)
     array = getArray()
-    large = (amount >= 8)
+    print(f"Found {len(people)} people!")
 
     if(len(people) == 1):
         place = getPlace(people [0],array)
         array[place].cash += array[place].bank8 /100000
+        array[place].profit += array[place].bank8 /100000
         array[place].VCAlone += 1
     else:
+        for i in range(len(array)):
+            array[i].VCAlone = 0
         for i in range(len(people)):
             place = getPlace(people [i],array)
             if(place != -1):
@@ -1703,15 +1709,37 @@ def logVC(people):
                 if (array[place].social == 60):   
                     array[place].social = 0
                     array[place].cash += array[place].bank5 /100 * amount
+                    array[place].profit += array[place].bank5 /100 * amount
                     print(f"paid {array[place].name} {array[place].bank5 /100 * amount}")
                 array[place].VC2 += 1
-                if large:
+                if (len(people) >= 8):
+                    print("Large Group!")
                     array[place].VCGroup += 1
     saveArray(array)
 
 def wordle(message):
     array = getArray()
     lines = message.split("\n")
+    
+    
+    coolkid = 0
+    #general interest for everyone
+    for i in range(len(array)):
+        array[i].daysnogamble += 1
+        array[i].profit = 0
+        if (array[i].bank7 > 0): coolkid += 1
+    if(coolkid == 0):
+        coolkid = 1
+    for i in range(len(array)):
+        array[i].cash += array[i].bank3 * min(array[i].daysnogamble,30)/1000
+        array[i].cash += array[i].bank4 * 0.01
+        array[i].cash += array[i].bank6 * array[place].achivements.count("-")/1000
+        array[i].cash += array[i].bank7 / 10 / coolkid
+        array[i].profit += array[i].bank3 * min(array[i].daysnogamble,30)/1000
+        array[i].profit += array[i].bank4 * 0.01
+        array[i].profit += array[i].bank6 * array[place].achivements.count("-")/1000
+        array[i].profit += array[i].bank7 / 10 / coolkid
+
     for i in range(len(lines)-1):
         if(lines[i+1] [0]== "👑" or lines[i+1].startswith(":crown:")):
             moneyGain = 0.025
@@ -1749,21 +1777,12 @@ def wordle(message):
                 if(place != -1):
                     array[place].cash += int(moneyGain*float(array[place].bank0))
                     array[place].cash += int(shitterGain*float(array[place].bank1))
+                    array[place].profit += int(moneyGain*float(array[place].bank0))
+                    array[place].profit += int(shitterGain*float(array[place].bank1))
                     array[place].sus += susadd
                     array[place].wordle += 1
 
-        coolkid = 0
-        #general interest for everyone
-        for i in range(len(array)):
-            array[i].daysnogamble += 1
-            if (array[i].bank7 > 0): coolkid += 1
-        if(coolkid == 0):
-            coolkid = 1
-        for i in range(len(array)):
-            array[i].cash += array[i].bank3 * min(array[i].daysnogamble,30)/1000
-            array[i].cash += array[i].bank4 * 0.01
-            array[i].cash += array[i].bank6 * array[place].achivements.count("-")/1000
-            array[i].cash += array[i].bank7 / 10 / coolkid
+        
 
     saveArray(array)
     return "Money Gained!!"
@@ -1808,6 +1827,7 @@ def beef_dip(message,ID):
         tempid = int(message.split("@")[i+1].split(">")[0])
         tempplace = getPlace(tempid,array)
         array[tempplace].cash += array[tempplace].bank9 *array[tempplace].beefdip / 100
+        array[tempplace].profit += array[tempplace].bank9 *array[tempplace].beefdip / 100
     saveArray(array)
     return "Your Beef Dip Tier is Tier "+str(array[place].beefdip)
 
@@ -1858,7 +1878,11 @@ def get_response(user_input: str,username, nameID, channel) -> str:
                 return "That name is not valid, current valid names are: Alex, Josh, Javan, and Kaelan"
         else:
             return "Invalid Quote format, please use this format:\n\"Quote text here\" - author"
-        
+
+    elif lowered.startswith(",register "):
+        text = register(user_input,nameID)
+    elif(place == -1) and (lowered.startswith(",")):
+        return "You are not registered, register with ```,register <Name>```"
     #dice
     elif ',roll' == lowered [0:5]:
         dice = lowered [6:]
@@ -1979,7 +2003,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
                       "Everyone! Get in the car! We're leaving this town, NOW!",
                       "Hurmet!!!! Purple!!",
                       "Ah! What the?! This isn't the car!!!",
-                      "Breads done"
+                      "Breads done",
+                      "Yeah x is just a value of x"
                       ])
     #elif lowered == ",cash in":
         #if(array[place].count >= 1000):
@@ -2000,8 +2025,6 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text = slots(nameID)
     elif lowered.startswith(",music add "):
         text = musicAdd(user_input)
-    elif lowered.startswith(",register "):
-        text = register(user_input,nameID)
     elif lowered.startswith(",achievements") or lowered.startswith(",achievement") or lowered=="sigma tokens for the coolest of people":
         text = achivements(lowered,nameID)
     #give them random money for chatting trol
@@ -2017,7 +2040,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         else:
             text = "give me "+str(5*num)+" minutes"
 
-
+    elif (lowered == ",debug"):
+        print(array[place].debug())
     #Invalid ccommand
     elif lowered.startswith(","):
         text = choice([
@@ -2034,7 +2058,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     if(array[place].achivements.find("Forever Alone") == -1 and array[place].VCAlone >= 1440):
         array[place].achivements += "Forever Alone-"
         text += "\n\nAchivement Get: Forever Alone"
-    """if(array[place].achivements.find("Beef Dip Tier 1") == -1 and array[place].beefdip >= 1):
+    if(array[place].achivements.find("Beef Dip Tier 1") == -1 and array[place].beefdip >= 1):
         array[place].achivements += "Beef Dip Tier 1-"
         text += "\n\nAchivement Get: Beef Dip Tier 1"
     if(array[place].achivements.find("Beef Dip Tier 2") == -1 and array[place].beefdip >= 2):
@@ -2048,7 +2072,7 @@ def get_response(user_input: str,username, nameID, channel) -> str:
         text += "\n\nAchivement Get: Beef Dip Tier 4"
     if(array[place].achivements.find("Beef Dip Tier 5") == -1 and array[place].beefdip >= 5):
         array[place].achivements += "Beef Dip Tier 5-"
-        text += "\n\nAchivement Get: Beef Dip Tier 5"""
+        text += "\n\nAchivement Get: Beef Dip Tier 5"
     if(array[place].achivements.find("Ultra Lucky Man") == -1 and randint(1,1000000) == 550):
         array[place].achivements += "Ultra Lucky Man-"
         text += "\n\nAchivement Get: Ultra Lucky Man"
@@ -2064,5 +2088,8 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     if(array[place].achivements.find("Drunk") == -1 and array[place].beer >=100):
         array[place].achivements += "Drunk-"
         text += "\n\nAchivement Get: Drunk"
+    if(array[place].achivements.find("Multi level Marketing") == -1 and array[place].profit >=1000):
+        array[place].achivements += "Multi level Marketing-"
+        text += "\n\nAchivement Get: Multi level Marketing"
     saveArray(array)
     return text
