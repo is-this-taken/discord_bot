@@ -99,12 +99,11 @@ def market(ID,lowered):
 def market_view(array):
     message = "[ID] [Price] for [Quantity] [Item Name]\n"
     marketList = []
-
     marketID = 0
     for i in range(len(array)):
         for j in range(len(array[i].marketPosted.split("|"))):
-            marketList.append(array[i].marketPosted.split("|") [j])
-        
+            if(array[i].marketPosted.split("|") [j] != ""):
+                marketList.append(array[i].marketPosted.split("|") [j])
         if array[i].marketPosted != "":
             #make message
             message += f"{array[i].name}'s listings are\n"
@@ -121,7 +120,6 @@ def market_view(array):
                     if int(marketList[marketID].split("-") [1]) == linesRead:
                         itemName = text
                 fin.close()
-
                 message += f"{marketID+1}. k${marketList[marketID].split('-') [2]} for {marketList[marketID].split('-') [0]} {itemName}\n"
                 marketID += 1
     return message
@@ -424,7 +422,7 @@ def case(ID,lowered):
     elif(command == "use"):
         return case_use(ID,array,place,lowered)
     elif(command == "info"):
-        return "KFrat case drops:\n22% - 1 Common Badge Token\n 6% - 1 Epic Badge Token\n 2% - 1 Legendary Badge Token\n 6% - 1 Common Badge Breaker Token (destroy a random persons common badge)\n 4% - 1 Epic Badge Breaker Token (destroy a random persons epic badge)\n 2% - 1 Legendary Badge Breaker Token (destroy a random persons Legendary badge)\n 2% - 1 Special Badge Breaker Token (destroy a random persons Special badge)\n10% - 1 Withdraw Token\n 6% - 3 Withdraw Tokens\n 2% - 9 Withdraw Tokens\n10% - 1 0.1% Interest Token (gives 0.1% interest of your case bank balance)\n 6% - 1 0.5% Interest Token (gives 0.5% interest of your case bank balance)\n 2% - 1 1.0% Interest Token (gives 1.0% interest of your case bank balance)\n 6% - 3 Case Purchace Credits\n 2% - Robery Token (Steal 2% from all case banks)\n 6% - 1 CS2 Case\n 2% - 3 CS2 Case\n 2% - 1 KFrat Response Token (lets you add a response to KFrat)\n 2% - 1 KFrat DM Token (lets you DM someone though KFrat))"
+        return "KFrat case drops:\n22% - 1 Common Badge Token\n 6% - 1 Epic Badge Token\n 2% - 1 Legendary Badge Token\n 6% - 1 Common Badge Breaker Token (destroy a random persons common badge)\n 4% - 1 Epic Badge Breaker Token (destroy a random persons epic badge)\n 2% - 1 Legendary Badge Breaker Token (destroy a random persons Legendary badge)\n 2% - 1 Special Badge Breaker Token (destroy a random persons Special badge)\n10% - 1 Withdraw Token\n 6% - 3 Withdraw Tokens\n 2% - 9 Withdraw Tokens\n10% - 1 0.1% Interest Token (gives 0.1% interest of your case bank balance)\n 6% - 1 0.5% Interest Token (gives 0.5% interest of your case bank balance)\n 2% - 1 1.0% Interest Token (gives 1.0% interest of your case bank balance)\n 6% - 3 Case Keys\n 2% - Robery Token (Steal 2% from all case banks)\n 6% - 1 CS2 Case\n 2% - 3 CS2 Case\n 2% - 1 KFrat Response Token (lets you add a response to KFrat)\n 2% - 1 KFrat DM Token (lets you DM someone though KFrat))"
     else:
         return "try [,case help] for more information"
 
@@ -665,7 +663,7 @@ def case_use(ID,array,place,lowered):
     elif itemID == "16":
         array[place].caseBuyCredits += itemUseAmount
         saveArray(array)
-        message = f"You have used {itemUseAmount} Case Purchace Credit(s)\nYou can now buy {itemUseAmount} more cases from the shop today"
+        message = f"You have used {itemUseAmount} Case Key(s)\nYou can now buy {itemUseAmount} more cases from the shop today"
 
     #delete item from itemsList
     if itemUseAmount == int(itemCount):
@@ -1333,13 +1331,18 @@ def buyShit(message, ID):
     checkOut = fuckComputer(item)
 
     if(checkOut):
-        array[place].cash -= shop[item-1].price
-        shop[item-1].stock -= 1
-        print(item)
+
         if(item == 12):
             array[place].cases += 1
         elif(item == 13):
+            if(array[place].caseBuyCredit == 0):
+                return "You have no case keys moron"
             array[place].caseCount += 1
+            array[place].caseBuyCredit -= 1
+        array[place].cash -= shop[item-1].price
+        shop[item-1].stock -= 1
+        print(item)
+        
         saveArray(array)
         saveShop(shop)
         return f"You have bought {shop[item-1].item}"
@@ -1739,6 +1742,8 @@ def wordle(message):
         array[i].profit += array[i].bank4 * 0.01
         array[i].profit += array[i].bank6 * array[place].achivements.count("-")/1000
         array[i].profit += array[i].bank7 / 10 / coolkid
+        if(array[i].caseBuyCredits == 0):
+            array[i].caseBuyCredits == 1
 
     for i in range(len(lines)-1):
         if(lines[i+1] [0]== "👑" or lines[i+1].startswith(":crown:")):
@@ -1782,7 +1787,6 @@ def wordle(message):
                     array[place].sus += susadd
                     array[place].wordle += 1
 
-        
 
     saveArray(array)
     return "Money Gained!!"
