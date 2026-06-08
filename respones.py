@@ -260,7 +260,7 @@ def market_post(array,place,lowered):
 
 def market_buy(array,place,lowered):
     message = "Sorry, something went wrong"
-
+    print("1")
     #check for item index
     if (lowered.count(" ") == 1):
         return "Please add an item ID. This is the first number when you use [],market view]"
@@ -306,17 +306,18 @@ def market_buy(array,place,lowered):
             array[place].caseItems = itemCode
         else:
             array[place].caseItems += f"|{itemCode}"
-
+        print("a")
         #remove price from buyers money
         array[place].cash -= marketPrice
         saveArray(array)
         orderItems(array,place)
-
+        print("b")
         #give money to owner
         array[int(marketBuyList[marketIndex].split("-")[3])].cash += marketPrice
  
         checkForThis = array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|") [marketIndex - subtractThis]
         #remove from market
+        print("d")
         for i in range(len(array)):
             newMarket = ""
             for j in range(len(array[i].marketPosted.split("|"))):
@@ -328,7 +329,8 @@ def market_buy(array,place,lowered):
 
             array[i].marketPosted = newMarket
             saveArray(array)
-
+            print("Saved!")
+        print("e")
         #get item name
         itemName = ""
         fin = open("caseContents.txt","r")
@@ -342,6 +344,7 @@ def market_buy(array,place,lowered):
             if int(marketBuyList[marketIndex].split("-")[1]) == linesRead:
                 itemName = text
         fin.close()
+        print("gun")
 
         if int(marketBuyList[marketIndex].split("-")[0]) != 1:
             itemName += "s"

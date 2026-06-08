@@ -45,6 +45,6 @@
 14 1 Epic Badge Token
 14 1 Epic Badge Token
 15 1 Legendary Badge Token
-16 3 Case Purchace Credits
-16 3 Case Purchace Credits
-16 3 Case Purchace Credits
+16 3 Case Keys
+16 3 Case Keys
+16 3 Case Keys
