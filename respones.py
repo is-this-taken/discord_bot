@@ -1809,11 +1809,11 @@ def wordle(message):
     for i in range(len(array)):
         array[i].cash += array[i].bank3 * min(array[i].daysnogamble,30)/1000
         array[i].cash += array[i].bank4 * 0.01
-        array[i].cash += array[i].bank6 * array[place].achivements.count("-")/1000
+        array[i].cash += array[i].bank6 * array[i].achivements.count("-")/1000
         array[i].cash += array[i].bank7 / 10 / coolkid
         array[i].profit += array[i].bank3 * min(array[i].daysnogamble,30)/1000
         array[i].profit += array[i].bank4 * 0.01
-        array[i].profit += array[i].bank6 * array[place].achivements.count("-")/1000
+        array[i].profit += array[i].bank6 * array[i].achivements.count("-")/1000
         array[i].profit += array[i].bank7 / 10 / coolkid
         if(array[i].caseBuyCredits == 0):
             array[i].caseBuyCredits == 1
