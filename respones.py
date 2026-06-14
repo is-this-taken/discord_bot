@@ -318,14 +318,18 @@ def market_buy(array,place,lowered):
         checkForThis = array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|") [marketIndex - subtractThis]
         #remove from market
         print("d")
+        ivansucksatcoding = 0
         for i in range(len(array)):
             newMarket = ""
-            for j in range(len(array[i].marketPosted.split("|"))):
-                if array[i].marketPosted.split("|") [j] != checkForThis or (marketIndex != (i*len(array[i].marketPosted.split("|"))+j)):
-                    if newMarket == "":
-                        newMarket = array[i].marketPosted.split("|") [j]
-                    else:
-                        newMarket += f"|{array[i].marketPosted.split('|') [j]}"
+            if(array[i].marketPosted.split("|") != ""):
+                for j in range(len(array[i].marketPosted.split("|"))):
+                    ivansucksatcoding += 1
+                    print(array[i].marketPosted.split("|") [j] != checkForThis,(marketIndex != ivansucksatcoding))
+                    if array[i].marketPosted.split("|") [j] != checkForThis and (marketIndex != ivansucksatcoding):
+                        if newMarket == "":
+                            newMarket = array[i].marketPosted.split("|") [j]
+                        else:
+                            newMarket += f"|{array[i].marketPosted.split('|') [j]}"
 
             array[i].marketPosted = newMarket
             saveArray(array)
@@ -1351,6 +1355,8 @@ def getMoney(ID):
             return f"Here is your ${moneygain} of gambling money you slut"
         elif(ID == 552600422016090133):
             return f"Here is your ${moneygain} you dirty Spigru"
+        elif(ID == 739948707440754790):
+            return f"Have your ${moneygain}, you insomniac Riga"
         else:
             return f"You got the Bonus ${moneygain} and now have ${array[place].cash}"
 
@@ -1807,14 +1813,14 @@ def wordle(message):
     for i in range(len(array)):
         array[i].cash += array[i].bank3 * min(array[i].daysnogamble,30)/1000
         array[i].cash += array[i].bank4 * 0.01
-        array[i].cash += array[i].bank6 * array[place].achivements.count("-")/1000
+        array[i].cash += array[i].bank6 * array[i].achivements.count("-")/1000
         array[i].cash += array[i].bank7 / 10 / coolkid
         array[i].profit += array[i].bank3 * min(array[i].daysnogamble,30)/1000
         array[i].profit += array[i].bank4 * 0.01
-        array[i].profit += array[i].bank6 * array[place].achivements.count("-")/1000
+        array[i].profit += array[i].bank6 * array[i].achivements.count("-")/1000
         array[i].profit += array[i].bank7 / 10 / coolkid
         if(array[i].caseBuyCredits == 0):
-            array[i].caseBuyCredits == 1
+            array[i].caseBuyCredits += 1
 
     for i in range(len(lines)-1):
         if(lines[i+1] [0]== "👑" or lines[i+1].startswith(":crown:")):
