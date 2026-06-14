@@ -6,6 +6,7 @@
 1c - Gooner
 1c - Goober
 1c - Chicken Jockey
+1c - Stewie
 1c - Peter Griffin
 1c - Sneakers O'Tool
 1c - Gnomer
@@ -39,6 +40,6 @@
 1l - Parkor Master
 1l - CP Lover
 1l - <:osnar:1474611911113965700>
-1l - Man whos hands and legs are Penises
+0l - Man whos hands and legs are Penises
 1s - Exodia, The Forbidden one
 1s - Parkour Champion
