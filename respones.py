@@ -318,14 +318,18 @@ def market_buy(array,place,lowered):
         checkForThis = array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|") [marketIndex - subtractThis]
         #remove from market
         print("d")
+        ivansucksatcoding = 0
         for i in range(len(array)):
             newMarket = ""
-            for j in range(len(array[i].marketPosted.split("|"))):
-                if array[i].marketPosted.split("|") [j] != checkForThis or (marketIndex != (i*len(array[i].marketPosted.split("|"))+j)):
-                    if newMarket == "":
-                        newMarket = array[i].marketPosted.split("|") [j]
-                    else:
-                        newMarket += f"|{array[i].marketPosted.split('|') [j]}"
+            if(array[i].marketPosted.split("|") != ""):
+                for j in range(len(array[i].marketPosted.split("|"))):
+                    ivansucksatcoding += 1
+                    print(array[i].marketPosted.split("|") [j] != checkForThis,(marketIndex == ivansucksatcoding))
+                    if array[i].marketPosted.split("|") [j] != checkForThis or (marketIndex == ivansucksatcoding):
+                        if newMarket == "":
+                            newMarket = array[i].marketPosted.split("|") [j]
+                        else:
+                            newMarket += f"|{array[i].marketPosted.split('|') [j]}"
 
             array[i].marketPosted = newMarket
             saveArray(array)
@@ -1816,7 +1820,7 @@ def wordle(message):
         array[i].profit += array[i].bank6 * array[i].achivements.count("-")/1000
         array[i].profit += array[i].bank7 / 10 / coolkid
         if(array[i].caseBuyCredits == 0):
-            array[i].caseBuyCredits == 1
+            array[i].caseBuyCredits += 1
 
     for i in range(len(lines)-1):
         if(lines[i+1] [0]== "👑" or lines[i+1].startswith(":crown:")):
