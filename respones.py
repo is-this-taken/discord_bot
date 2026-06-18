@@ -323,13 +323,15 @@ def market_buy(array,place,lowered):
             newMarket = ""
             if(array[i].marketPosted.split("|") != ""):
                 for j in range(len(array[i].marketPosted.split("|"))):
-                    ivansucksatcoding += 1
                     print(array[i].marketPosted.split("|") [j] != checkForThis,(marketIndex != ivansucksatcoding))
-                    if array[i].marketPosted.split("|") [j] != checkForThis and (marketIndex != ivansucksatcoding):
+                    print(f"Market index: {marketIndex}")
+                    print(f"Ivan Sucks: {ivansucksatcoding}")
+                    if array[i].marketPosted.split("|") [j] != checkForThis or (marketIndex != ivansucksatcoding):
                         if newMarket == "":
                             newMarket = array[i].marketPosted.split("|") [j]
                         else:
                             newMarket += f"|{array[i].marketPosted.split('|') [j]}"
+                    ivansucksatcoding += 1
 
             array[i].marketPosted = newMarket
             saveArray(array)
@@ -835,6 +837,7 @@ def openBadgeToken(array, place, rarity):
     for i in range(len(badgeArray)):
         if badgeArray[i][0] == "1" and badgeArray[i][1] == (rarity[0].lower()):
             available += 1
+            print(badgeArray[i])
 
     #break on no badges
     if (available == 0):
@@ -845,7 +848,7 @@ def openBadgeToken(array, place, rarity):
     badgeToAdd = 0
     for i in range(fileLen):
         if badgeArray[i][0] == "1":
-            if count == randy+previousRarityCount:
+            if count == randy + previousRarityCount:
                 badgeToAdd = i
                 break
             count += 1
