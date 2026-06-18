@@ -321,7 +321,7 @@ def market_buy(array,place,lowered):
         ivansucksatcoding = 0
         for i in range(len(array)):
             newMarket = ""
-            if(array[i].marketPosted.split("|") != ""):
+            if(len(array[i].marketPosted) > 2):
                 for j in range(len(array[i].marketPosted.split("|"))):
                     print(array[i].marketPosted.split("|") [j] != checkForThis,(marketIndex != ivansucksatcoding))
                     print(f"Market index: {marketIndex}")
@@ -1987,11 +1987,11 @@ def get_response(user_input: str,username, nameID, channel) -> str:
     #commands
     elif lowered.startswith(",givebadge"):
         text = giveBadge(nameID,lowered.split(" ") [1],lowered)
-    elif lowered.startswith(",market"):
+    elif lowered.startswith(",market") and channel in bot_list:
         text = market(nameID,lowered)
     elif lowered == ",badge" or lowered == ",badges":
         text = badges(nameID)
-    elif lowered.startswith(",case"):
+    elif lowered.startswith(",case") and channel in bot_list:
         text = case(nameID,lowered)
     elif lowered == ",beef dip":
         text = beef_dip(lowered,nameID)
