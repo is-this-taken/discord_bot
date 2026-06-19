@@ -8,8 +8,8 @@ KFrat Response Token
 KFrat DM Token
 Common Badge Breaker Token
 Epic Badge Breaker Token
-Legendary Badge Breaker Token
-Special Badge Breaker Token
+Legendary+ Badge Breaker Token
+Badge Maker Token
 Common Badge Token
 Epic Badge Token
 Legendary Badge Token

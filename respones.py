@@ -7,7 +7,7 @@ from os import startfile
 
 #The class per person
 class Person:
-    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,bank10,beefdip,VC2,VCAlone,VCGroup,profit,daysnogamble,withdrawTokens,caseCount,caseBuyCredits,caseItems,badges,marketPosted,cases,social):
+    def __init__(self,id,mode,count,name,bet,cash,slot1,slot2,slot3,beer,sus,achivements,wordle,bank0,bank1,bank2,bank3,bank4,bank5,bank6,bank7,bank8,bank9,bank10,beefdip,VC2,VCAlone,VCGroup,profit,daysnogamble,caseInterest,caseCount,caseBuyCredits,caseItems,badges,marketPosted,cases,social):
          self.id = int(id)
          self.mode = int(mode)
          self.count = int(count)
@@ -43,7 +43,7 @@ class Person:
          self.social = int(social)
 
          #case variables - Javan
-         self.withdrawTokens = int(withdrawTokens)
+         self.caseInterest = float(caseInterest)
          self.caseCount = int(caseCount)
          self.caseBuyCredits = int(caseBuyCredits)
          self.caseItems = str(caseItems)
@@ -51,10 +51,10 @@ class Person:
          self.marketPosted = str(marketPosted)
     def tostr (self):
         #only used to write to file
-        return f"{int(self.id)},{int(self.mode)},{int(self.count)},{str(self.name)},{int(self.bet)},{int(self.cash)},{int(self.slot1)},{int(self.slot2)},{int(self.slot3)},{int(self.beer)},{int(self.sus)},{str(self.achivements)},{int(self.wordle)},{int(self.bank0)},{int(self.bank1)},{int(self.bank2)},{int(self.bank3)},{int(self.bank4)},{int(self.bank5)},{int(self.bank6)},{int(self.bank7)},{int(self.bank8)},{int(self.bank9)},{int(self.bank10)},{int(self.beefdip)},{int(self.VC2)},{int(self.VCAlone)},{int(self.VCGroup)},{int(self.profit)},{int(self.daysnogamble)},{int(self.withdrawTokens)},{int(self.caseCount)},{int(self.caseBuyCredits)},{str(self.caseItems)},{str(self.badges)},{str(self.marketPosted)},{int(self.cases)},{int(self.social)}"
+        return f"{int(self.id)},{int(self.mode)},{int(self.count)},{str(self.name)},{int(self.bet)},{int(self.cash)},{int(self.slot1)},{int(self.slot2)},{int(self.slot3)},{int(self.beer)},{int(self.sus)},{str(self.achivements)},{int(self.wordle)},{int(self.bank0)},{int(self.bank1)},{int(self.bank2)},{int(self.bank3)},{int(self.bank4)},{int(self.bank5)},{int(self.bank6)},{int(self.bank7)},{int(self.bank8)},{int(self.bank9)},{int(self.bank10)},{int(self.beefdip)},{int(self.VC2)},{int(self.VCAlone)},{int(self.VCGroup)},{int(self.profit)},{int(self.daysnogamble)},{float(self.caseInterest)},{int(self.caseCount)},{int(self.caseBuyCredits)},{str(self.caseItems)},{str(self.badges)},{str(self.marketPosted)},{int(self.cases)},{int(self.social)}"
     def debug (self):
         #only used to write to file
-        return f"ID:{int(self.id)},Mode:{int(self.mode)},Count:{int(self.count)},Name:{str(self.name)},Bet:{int(self.bet)},cash:{int(self.cash)},slot1:{int(self.slot1)},slot2:{int(self.slot2)},slot3:{int(self.slot3)},beer:{int(self.beer)},sus:{int(self.sus)},achivevements:{str(self.achivements)},wordle:{int(self.wordle)},bank0:{int(self.bank0)},bank1{int(self.bank1)},bank2{int(self.bank2)},bank3{int(self.bank3)},bank4{int(self.bank4)},bank5{int(self.bank5)},bank6{int(self.bank6)},bank7{int(self.bank7)},bank8{int(self.bank8)},bank9{int(self.bank9)},bank10{int(self.bank10)},beefdip{int(self.beefdip)},VC2{int(self.VC2)},VCAlone{int(self.VCAlone)},VCGroup{int(self.VCGroup)},profit{int(self.profit)},daysnogamble{int(self.daysnogamble)},withdrawtoken{int(self.withdrawTokens)},caseCount{int(self.caseCount)},caseBuyCredit{int(self.caseBuyCredits)},CaseItems{str(self.caseItems)},Badges{str(self.badges)},Marketposted{str(self.marketPosted)},cases{int(self.cases)},social{int(self.social)}"
+        return f"ID:{int(self.id)},Mode:{int(self.mode)},Count:{int(self.count)},Name:{str(self.name)},Bet:{int(self.bet)},cash:{int(self.cash)},slot1:{int(self.slot1)},slot2:{int(self.slot2)},slot3:{int(self.slot3)},beer:{int(self.beer)},sus:{int(self.sus)},achivevements:{str(self.achivements)},wordle:{int(self.wordle)},bank0:{int(self.bank0)},bank1{int(self.bank1)},bank2{int(self.bank2)},bank3{int(self.bank3)},bank4{int(self.bank4)},bank5{int(self.bank5)},bank6{int(self.bank6)},bank7{int(self.bank7)},bank8{int(self.bank8)},bank9{int(self.bank9)},bank10{int(self.bank10)},beefdip{int(self.beefdip)},VC2{int(self.VC2)},VCAlone{int(self.VCAlone)},VCGroup{int(self.VCGroup)},profit{int(self.profit)},daysnogamble{int(self.daysnogamble)},withdrawtoken{float(self.caseInterest)},caseCount{int(self.caseCount)},caseBuyCredit{int(self.caseBuyCredits)},CaseItems{str(self.caseItems)},Badges{str(self.badges)},Marketposted{str(self.marketPosted)},cases{int(self.cases)},social{int(self.social)}"
     
 #The class per shop item
 class Shop:
@@ -116,7 +116,7 @@ def giveBadge(ID,target,lowered):
         array[targetPlace].badges += f"|{badgeID}"
     saveArray(array)
 
-    updateBadges(array)
+    updateBadges(array, place)
 
     return f"You have given {badge} to {array[targetPlace].name}!"
 
@@ -260,7 +260,6 @@ def market_post(array,place,lowered):
 
 def market_buy(array,place,lowered):
     message = "Sorry, something went wrong"
-    print("1")
     #check for item index
     if (lowered.count(" ") == 1):
         return "Please add an item ID. This is the first number when you use [],market view]"
@@ -306,26 +305,22 @@ def market_buy(array,place,lowered):
             array[place].caseItems = itemCode
         else:
             array[place].caseItems += f"|{itemCode}"
-        print("a")
+
         #remove price from buyers money
         array[place].cash -= marketPrice
         saveArray(array)
         orderItems(array,place)
-        print("b")
+
         #give money to owner
         array[int(marketBuyList[marketIndex].split("-")[3])].cash += marketPrice
  
         checkForThis = array[int(marketBuyList[marketIndex].split("-")[3])].marketPosted.split("|") [marketIndex - subtractThis]
         #remove from market
-        print("d")
         ivansucksatcoding = 0
         for i in range(len(array)):
             newMarket = ""
             if(len(array[i].marketPosted) > 2):
                 for j in range(len(array[i].marketPosted.split("|"))):
-                    print(array[i].marketPosted.split("|") [j] != checkForThis,(marketIndex != ivansucksatcoding))
-                    print(f"Market index: {marketIndex}")
-                    print(f"Ivan Sucks: {ivansucksatcoding}")
                     if array[i].marketPosted.split("|") [j] != checkForThis or (marketIndex != ivansucksatcoding):
                         if newMarket == "":
                             newMarket = array[i].marketPosted.split("|") [j]
@@ -335,8 +330,7 @@ def market_buy(array,place,lowered):
 
             array[i].marketPosted = newMarket
             saveArray(array)
-            print("Saved!")
-        print("e")
+
         #get item name
         itemName = ""
         fin = open("caseContents.txt","r")
@@ -350,7 +344,6 @@ def market_buy(array,place,lowered):
             if int(marketBuyList[marketIndex].split("-")[1]) == linesRead:
                 itemName = text
         fin.close()
-        print("gun")
 
         if int(marketBuyList[marketIndex].split("-")[0]) != 1:
             itemName += "s"
@@ -362,8 +355,9 @@ def market_buy(array,place,lowered):
     Author: Javan
 """
 """"Updates and organises all badges"""
-def updateBadges(array):
+def updateBadges(array, place):
     ID = 0
+    checkForSpecial(array, place)
     for i in range(len(array)):
         place = getPlace(ID,array)
         #splits badge string into array of count-ID
@@ -405,6 +399,57 @@ def updateBadges(array):
                 array[place].badges += f"|{badgesID[i]}"
         saveArray(array)
         ID += 1
+
+
+def checkForSpecial(array, place):
+    badgeArray = array[place].badges.split("|")
+    if len(badgeArray) == 0:
+        return
+    
+    lines = []
+    fin = open("badgeList.txt","r")
+    total = 0
+    while True:
+        text = fin.readline().strip()
+        if text== "":
+            break
+        lines.append(text)
+
+        #gets how many of each rarity there is
+        if text[1] == "c" or text[1] == "e" or text[1] == "l":
+            total += 1
+    fin.close()
+
+    #EXODIA, The Forbidden One
+    if "0" in badgeArray and "1" in badgeArray and "2" in badgeArray and "3" in badgeArray and "4" in badgeArray:
+        array[place].badges += "|43"
+        lines[total] = "0s - Exodia, The Forbidden One"
+    total += 1
+    
+    #Parkour God
+    if "0" in badgeArray and "15" in badgeArray and "34" in badgeArray and "39" in badgeArray:
+        array[place].badges += "|44"
+        lines[total] = "0s - Parkour Champion"
+    total += 1
+
+    #ID collecter
+    if "0" in badgeArray and "21" in badgeArray and "22" in badgeArray and "23" in badgeArray and "24" in badgeArray and "25" in badgeArray and "26" in badgeArray and "27" in badgeArray:
+        array[place].badges += "|45"
+        lines[total] = "0s - Identity Theft"
+    total += 1
+    
+    #THE DICTATOR
+    if "0" in badgeArray and "17" in badgeArray and "18" in badgeArray and "19" in badgeArray and "20" in badgeArray:
+        array[place].badges += "|46"
+        lines[total] = "0s - THE DICTATOR"
+    total += 1
+    
+    #make badge unavailable
+    fout = open("badgeList.txt","w")
+    for i in range(len(lines)):
+        fout.write(lines[i]+"\n")
+    fout.close()
+    saveArray(array)
 
 """"Show off your badges"""
 def badges(ID):
@@ -473,13 +518,14 @@ def case(ID,lowered):
     #items: List all items owned
     #use [item]: Use an item
     #info: List all case drops and their chances
+    #interest: Shows you your interest rate for the case bank
 
     if(lowered.count(" ") == 0):
         return "try [,case help] for more information"
     command = lowered.split(" ") [1]
     if(command == "help"):
-        return "Here are a list of sub-commands\nHelp: Show this\nAmount: List amount of cases and keys owned\nOpen: Open a case\nItems: List all items owned\nUse [itemNumber] [Optional - add amount to use]: Use an item\nInfo: List all case drops and their chances"  
-    elif(command == "amount"):
+        return "Here are a list of sub-commands\nHelp: Show this\nAmount: List amount of cases and keys owned\nOpen: Open a case\nItems: List all items owned\nUse [itemNumber] [Optional - add amount to use]: Use an item\nInfo: List all case drops and their chances\nInterest: Shows you how much interest you have for the case bank"  
+    elif(command == "amount" or command == "amounts"):
         if (array[place].caseCount == 1):
             return f"You have {array[place].caseCount} case and you have {array[place].caseBuyCredits} key(s)."
         return f"You have {array[place].caseCount} cases and you have {array[place].caseBuyCredits} key(s)."
@@ -491,12 +537,14 @@ def case(ID,lowered):
         if (array[place].caseBuyCredits == 1):
             return f"You can buy {array[place].caseBuyCredits} case today."
         return f"You can buy {array[place].caseBuyCredits} cases today."
-    elif(command == "items"):
+    elif(command == "items" or command == "view"):
         return case_items(ID,array,place)
     elif(command == "use"):
         return case_use(ID,array,place,lowered)
     elif(command == "info"):
-        return "KFrat case drops:\n22% - 1 Common Badge Token\n 6% - 1 Epic Badge Token\n 2% - 1 Legendary Badge Token\n 6% - 1 Common Badge Breaker Token (destroy a random persons common badge)\n 4% - 1 Epic Badge Breaker Token (destroy a random persons epic badge)\n 2% - 1 Legendary Badge Breaker Token (destroy a random persons Legendary badge)\n 2% - 1 Special Badge Breaker Token (destroy a random persons Special badge)\n10% - 1 Withdraw Token\n 6% - 3 Withdraw Tokens\n 2% - 9 Withdraw Tokens\n10% - 1 0.1% Interest Token (gives 0.1% interest of your case bank balance)\n 6% - 1 0.5% Interest Token (gives 0.5% interest of your case bank balance)\n 2% - 1 1.0% Interest Token (gives 1.0% interest of your case bank balance)\n 6% - 3 Case Keys\n 2% - Robery Token (Steal 2% from all case banks)\n 6% - 1 CS2 Case\n 2% - 3 CS2 Case\n 2% - 1 KFrat Response Token (lets you add a response to KFrat)\n 2% - 1 KFrat DM Token (lets you DM someone though KFrat))"
+        return "KFrat case drops:\n22% - 1 Common Badge Token\n 6% - 1 Epic Badge Token\n 2% - 1 Legendary Badge Token\n 6% - 1 Common Badge Breaker Token (destroy a random persons common badge)\n 2% - 1 Epic Badge Breaker Token (destroy a random persons epic badge)\n 2% - 1 Legendary+ Badge Breaker Token (destroy a random persons Legendary or Special badge)\n10% - 1 Withdraw Token\n 8% - 3 Withdraw Tokens\n 2% - 9 Withdraw Tokens\n10% - 1 0.1% Interest Token (gives 0.1% interest of your case bank balance)\n 6% - 1 0.5% Interest Token (gives 0.5% interest of your case bank balance)\n 2% - 1 1.0% Interest Token (gives 1.0% interest of your case bank balance)\n 6% - 3 Case Keys\n 2% - Robery Token (Steal 2% from all case banks)\n 6% - 1 CS2 Case\n 2% - 3 CS2 Case\n 2% - 1 Badge maker token\n 2% - 1 KFrat Response Token (lets you add a response to KFrat)\n 2% - 1 KFrat DM Token (lets you DM someone though KFrat))"
+    elif(command == "interest" or command == "rate"):
+        return f"Your case bank interest rate is {float(int(array[place].caseInterest * 1000))/10}%"
     else:
         return "try [,case help] for more information"
 
@@ -637,24 +685,28 @@ def case_use(ID,array,place,lowered):
         return f"You don't have enought of those, you only have {itemCount} of that item"
 
     if itemID == "01":
-        array[place].withdrawTokens += itemUseAmount
-        saveArray(array)
-        message = f"You have applied {itemUseAmount} Withdraw Token(s) to your account"
+        message = f"Fun fact, don't."
 
     elif itemID == "02":
-        array[place].cash += int(0.001*array[place].bank10*itemUseAmount)
+        if array[place].caseInterest >= 0.05:
+            return "Sorry, applying this token would put you over the max of 5% interest\nYour token has been returned"
+        array[place].caseInterest += 0.001
         saveArray(array)
-        message = f"You have applied {itemUseAmount} 0.1% Intrest Token(s) to your account\nYou have gained ${int(0.001*array[place].bank10*itemUseAmount)}"
+        message = f"You have applied {itemUseAmount} 0.1% Intrest Token(s) to your account\nYour interest rate is now {array[place].caseInterest * 100}%"
 
     elif itemID == "03":
-        array[place].cash += int(0.005*array[place].bank10*itemUseAmount)
+        if array[place].caseInterest >= 0.046:
+            return "Sorry, applying this token would put you over the max of 5% interest\nYour token has been returned"
+        array[place].caseInterest += 0.005
         saveArray(array)
-        message = f"You have applied {itemUseAmount} 0.5% Intrest Token(s) to your account\nYou have gained ${int(0.005*array[place].bank10*itemUseAmount)}"
+        message = f"You have applied {itemUseAmount} 0.5% Intrest Token(s) to your account\nYour interest rate is now {array[place].caseInterest * 100}%"
 
     elif itemID == "04":
-        array[place].cash += int(0.01*array[place].bank10*itemUseAmount)
+        if array[place].caseInterest >= 0.041:
+            return "Sorry, applying this token would put you over the max of 5% interest\nYour token has been returned"
+        array[place].caseInterest += 0.01
         saveArray(array)
-        message = f"You have applied {itemUseAmount} 1.0% Intrest Token(s) to your account\nYou have gained ${int(0.01*array[place].bank10*itemUseAmount)}"
+        message = f"You have applied {itemUseAmount} 1.0% Intrest Token(s) to your account\nYour interest rate is now {array[place].caseInterest * 100}%"
 
     elif itemID == "05":
         totalStolen = 0
@@ -681,25 +733,27 @@ def case_use(ID,array,place,lowered):
         message = breakBadgeToken(itemUseAmount, "Common")
         if message.startswith("Sorry, no one owns any more "):
             itemUseAmount = 0
-        updateBadges(array)
+        updateBadges(array, place)
         
     elif itemID == "10":
         message = breakBadgeToken(itemUseAmount, "Epic")
         if message.startswith("Sorry, no one owns any more "):
             itemUseAmount = 0
-        updateBadges(array)
+        updateBadges(array, place)
 
     elif itemID == "11":
         message = breakBadgeToken(itemUseAmount, "Legendary")
         if message.startswith("Sorry, no one owns any more "):
             itemUseAmount = 0
-        updateBadges(array)
-        
-    elif itemID == "12":
+        updateBadges(array, place)
+
         message = breakBadgeToken(itemUseAmount, "Special")
         if message.startswith("Sorry, no one owns any more "):
             itemUseAmount = 0
-        updateBadges(array)
+        updateBadges(array, place)
+        
+    elif itemID == "12":
+        message = f"You have used {itemUseAmount} Badge Maker Token(s)\nPlease DM Ivan to add your custom Badge(s)"
         
     elif itemID == "13":
         message = ""
@@ -710,7 +764,7 @@ def case_use(ID,array,place,lowered):
         if addToMessage.startswith("Sorry, there are no remaining "):
             itemUseAmount = 0
         message += addToMessage
-        updateBadges(array)
+        updateBadges(array, place)
 
     elif itemID == "14":
         message = ""
@@ -721,7 +775,7 @@ def case_use(ID,array,place,lowered):
         if addToMessage.startswith("Sorry, there are no remaining "):
             itemUseAmount = 0
         message += addToMessage
-        updateBadges(array)
+        updateBadges(array, place)
 
     elif itemID == "15":
         message = ""
@@ -732,7 +786,7 @@ def case_use(ID,array,place,lowered):
         if addToMessage.startswith("Sorry, there are no remaining "):
             itemUseAmount = 0
         message += addToMessage
-        updateBadges(array)
+        updateBadges(array, place)
 
     elif itemID == "16":
         array[place].caseBuyCredits += itemUseAmount
@@ -837,7 +891,6 @@ def openBadgeToken(array, place, rarity):
     for i in range(len(badgeArray)):
         if badgeArray[i][0] == "1" and badgeArray[i][1] == (rarity[0].lower()):
             available += 1
-            print(badgeArray[i])
 
     #break on no badges
     if (available == 0):
@@ -1050,9 +1103,27 @@ def bank(ID,lowered):
             return "Please add a bank ID"
         if (lowered.count(" ") == 2):
             return "Please add an amount to withdraw"
-        if(array[place].withdrawTokens == 0):
-            return "You got no withdraw tokesn nerd"
-        array[place].withdrawTokens -= 1
+        
+        #check for withdraw
+        itemsList = array[place].caseItems.split("|")
+        newString = ""
+        noWithdraw = 1
+        for i in range(len(itemsList)):
+            itemCount = itemsList[i].split("-") [0]
+            itemID = itemsList[i].split("-") [1]
+            if itemID == "01":
+                if itemCount > 0:
+                    itemCount = str(int(itemCount)-1)
+                    noWithdraw = 0
+            if newString == "":
+                newString += f"{itemCount}-{itemID}"
+            else:
+                newString += f"|{itemCount}-{itemID}"
+        
+        if noWithdraw == 1:
+            return "You got no withdraw tokens nerd"
+        
+        array[place].caseItems = newString
         return bank_withdraw(ID,int(lowered.split(" ") [2]),int(lowered.split(" ") [3]),array,place)
     elif(command == "list"):
         return "Here are the list of banks:\n1. Wordle Bank\n2. Wordle Shitter Bank\n3. Gambling bank\n4. Addict Bank\n5. Safe Bank\n6. Social Bank\n7. Achivement Bnk\n8. Cool Kid Bank\n9. Sleepy Bank\n10. Beef Dip Bank\n11. Case Bank"
@@ -1065,7 +1136,7 @@ def bank(ID,lowered):
     elif(command == "amount" or command == "amounts"):
         return f"Wordle: {array[place].bank0}\nWordle Shitter: {array[place].bank1}\nGambling: {array[place].bank2}\nAddict: {array[place].bank3}\nSafe: {array[place].bank4}\nSocial: {array[place].bank5}\nAchivement: {array[place].bank6}\nCool Kid: {array[place].bank7}\nSleepy: {array[place].bank8}\nBeef Dip: {array[place].bank9}\nCase: {array[place].bank10}"
     elif(command == "stats"):
-        return f"Days without gambling: {array[place].daysnogamble}\nWithdraw tokens: {array[place].withdrawTokens}"
+        return f"Days without gambling: {array[place].daysnogamble}"
     else:
         return "try [,bank help] for more information"
     
@@ -1804,6 +1875,8 @@ def wordle(message):
     array = getArray()
     lines = message.split("\n")
     
+    highestCaseRate = 0
+    highestCaseRateID = -1
     
     coolkid = 0
     #general interest for everyone
@@ -1824,6 +1897,16 @@ def wordle(message):
         array[i].profit += array[i].bank7 / 10 / coolkid
         if(array[i].caseBuyCredits == 0):
             array[i].caseBuyCredits += 1
+        
+        #gain interest for case bank
+        array[i].cash += array[i].bank11 * array[i].caseInterest
+        array[i].profit += array[i].bank11 * array[i].caseInterest
+
+        if array[i].caseInterest > highestCaseRate:
+            highestCaseRateID = i
+    
+    if highestCaseRateID != -1:
+        array[highestCaseRateID].caseInterest -= 0.01
 
     for i in range(len(lines)-1):
         if(lines[i+1] [0]== "👑" or lines[i+1].startswith(":crown:")):

@@ -6,6 +6,7 @@
 01 3 Withdraw Tokens
 01 3 Withdraw Tokens
 01 3 Withdraw Tokens
+01 3 Withdraw Tokens
 01 9 Withdraw Tokens
 02 1 0.1% Interest Token
 02 1 0.1% Interest Token
@@ -27,9 +28,8 @@
 09 1 Common Badge Breaker Token
 09 1 Common Badge Breaker Token
 10 1 Epic Badge Breaker Token
-10 1 Epic Badge Breaker Token
-11 1 Legendary Badge Breaker Token
-12 1 Special Badge Breaker Token
+11 1 Legendary+ Badge Breaker Token
+12 1 Badge Maker Token
 13 1 Common Badge Token
 13 1 Common Badge Token
 13 1 Common Badge Token
