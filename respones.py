@@ -1112,7 +1112,7 @@ def bank(ID,lowered):
             itemCount = itemsList[i].split("-") [0]
             itemID = itemsList[i].split("-") [1]
             if itemID == "01":
-                if itemCount > 0:
+                if int(itemCount) > 0:
                     itemCount = str(int(itemCount)-1)
                     noWithdraw = 0
             if newString == "":
